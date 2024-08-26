@@ -10,8 +10,7 @@ ToDo:
 
 """
 
-from units import unit
+import battle
 
 if __name__ == '__main__':
-    print("awesome swag")
-    x = unit.Unit()
+    battle = battle.Battle()
