@@ -5,6 +5,8 @@ import os
 
 bar_size = 80
 
+unit_type = ["INFANTRY"]
+
 def cls():
     # For easier shorthand screen clearing
     os.system("cls")

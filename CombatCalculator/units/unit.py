@@ -10,6 +10,9 @@ class Unit:
         self.active_ability = False
         self.passive_ability = False
         self.modifiers = [0, 0, 0, 0, 0]
+        
+        if(not hasattr(self, 'type')):
+            self.type = 0
 
         # Get User Input
         self.health = self.GetHealth()
@@ -17,43 +20,54 @@ class Unit:
         self.modifiers = self.GetModifiers()
         
     def GetHealth(self):
-        utils.cls()
-        utils.PrintMenu("HEALTH MENU")
+        # Get Unit Max Health from type
         if (hasattr(self, 'type')):
             match self.type:
                 # Infantry
                 case 0:
+                    troop = "Infantry"
                     max_health = 100
                 # Armor
                 case 1:
+                    troop = "Armor"
                     max_health = 200
                 # Mobile
-                case 3:
+                case 2:
+                    troop = "Mobile"
                     max_health = 100
                 # Artillery
-                case 4:
+                case 3:
+                    troop = "Artillery"
                     max_health = 30
                 # Shock Troops
-                case 5:
+                case 4:
+                    troop = "Shock Troop"
                     max_health = 150
                 # Paratrooper
-                case 6:
+                case 5:
+                    troop = "Paratrooper"
                     max_health = 100
                 # Partisan
-                case 7:
+                case 6:
+                    troop = "Partisan"
                     max_health = 80
                 # Marine
-                case 8:
+                case 7:
+                    troop = "Marine"
                     max_health = 80
                 # Spec Ops
-                case 9:
+                case 8:
+                    troop = "Spec Ops"
                     max_health = 75
                 # Fuck
                 case _:
+                    troop = "Ur Cooked"
                     max_health = 9999
 
             while True: 
-                print(f"Input the current health of the Unit [1-{max_health}]")
+                utils.cls()
+                utils.PrintMenu("HEALTH MENU")
+                print(f"Input the current health of the {troop} Unit [1-{max_health}]")
 
                 try:
                     health = int(input())
@@ -132,7 +146,7 @@ class Unit:
                 match selection:
                     # Aeriel Bombardment (-25%)
                     case 1:
-                        modifiers[0] += -0.25
+                        modifiers[0] = round((modifiers[0] - 0.25), 2)
                     # No Supply (-50%)
                     case 2:
                         modifiers[1] = -0.5
@@ -144,7 +158,7 @@ class Unit:
                         modifiers[3] = self.GetTerrainModifier()
                     # Well Equiped (+5%)
                     case 5:
-                        modifiers[4] += 0.05
+                        modifiers[4] = round((modifiers[4] + 0.05), 2)
                     # Reset Modifier
                     case 6:
                         if (self.ResetModifier()):
@@ -169,7 +183,7 @@ class Unit:
                     return 0
 
                 years = int(years)
-                return (years * -0.1)
+                return round((years * -0.1), 2)
             except:
                 utils.ErrorInput()
 
@@ -190,9 +204,9 @@ class Unit:
 
                                 if (4 < percent < 16):
                                     if (bonus.lower() == "y"):
-                                        return percent/100
+                                        return round((percent/100), 2)
                                     else:
-                                        return percent/100 * -1
+                                        return round((percent/100 * -1), 2)
                                 else:
                                     raise TypeError
                             except:
@@ -208,8 +222,8 @@ class Unit:
     def ResetModifier(self):
         utils.cls()
         utils.PrintMenu("RESET MOD MENU")
-        print("\nAre you sure you want to reset the modifiers on this unit?")
-        print("\nIf you are sure, input [Y/y] (Any other input will go back to the | MOD MENU |)")
+        print(f"\nAre you sure you want to reset the modifiers on this {utils.unit_type[self.type]}unit?")
+        print("\nIf you are sure, input [Y/y] (Any other input will go back to the | MODIFIER MENU |)")
 
         reset = input()
 
@@ -219,7 +233,7 @@ class Unit:
             return False
 
     def PrintModifiers(self):
-        print("CURRENT MODIFIERS:")
+        print(f"CURRENT MODIFIERS OF THE {utils.unit_type[self.type]} UNIT:")
         if (sum(self.modifiers) == 0):
             print("\tNone!")
             return
