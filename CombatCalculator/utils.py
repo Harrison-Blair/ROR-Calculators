@@ -57,6 +57,7 @@ def CLS(numlines=100):
 
 def PrintMenu(name="MENU NAME", length=80):
     """ Prints a given menu name at a given length with bars surrounding """
+    print()
     print("=" * length)
     n = name.center(18)
     print(f"|{n}|" * 4)
@@ -76,22 +77,20 @@ def PrintErrorMenu(error=None):
     print("\nAn error has occured!")
     if (error != None):
         print(f"\n{error}")
-    print("\n\x1B[3mPress enter to continue...\x1B[0m")
-    input()
+    input("\n\x1B[3mPress enter to continue...\x1B[0m")
 
-def PrintUnitInfoMenu():
+def PrintUnitInfo(nums=False):
     """ Prints the Unit Type data to the console """
     types = LoadUnitTypes()
 
     if (types == None):
         return
 
-    CLS()
-    PrintMenu("UNIT INFO MENU")
-
     for i in types:
         if (i['id'] > 0):
             print("-" * 65)
+            if(nums):
+                print(f"Unit ID# : {i['id']}")
             print(f"Unit Name : {i['name'].upper()}")
             print(f"\nStats : ")
             print(f"\t{format("Max Health", "<25")} : {i['hps']}")
@@ -100,8 +99,11 @@ def PrintUnitInfoMenu():
             print(f"\nUpkeep : ")
             for j in i['ukp']:
                 print(f"\t- {j[0]} {j[1]}")
-
-    print("\n\x1B[3mPress enter to continue...\x1B[0m")
-    input()
             
+def PrintUnitInfoMenu():
+    CLS()
+    PrintMenu("UNIT INFO MENU")
     
+    PrintUnitInfo()
+
+    input("\n\x1B[3mPress enter to continue...\x1B[0m")

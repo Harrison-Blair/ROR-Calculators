@@ -21,7 +21,7 @@ def main():
         print("\t5. Options")
         
         print("\n\t[e]xit")
-        choice = input()
+        choice = input("\n> ")
 
         try:
             if (choice.lower() == "e"):
