@@ -1,0 +1,85 @@
+{ 
+    "unit_types": [
+        {
+            "name": "",
+            "id": 0,
+            "hps": -1,
+            "dmg": -1,
+            "spd": -1,
+            "ukp": [ [0.0, "Light Ammo"] ]
+        },
+        {
+            "name": "Infantry",
+            "id": 1,
+            "hps": 100,
+            "dmg": 60,
+            "spd": 2,
+            "ukp": [ [5.0, "Light Ammo"], [1.0, "Small Arms"] ]
+        },
+        {
+            "name": "Armor",
+            "id": 2,
+            "hps": 200,
+            "dmg": 200,
+            "spd": 3,
+            "ukp": [ [4.0, "Heavy Ammo"], [1.0, "Heavy Arms"], [10.0, "Heavy Fuel"],  [2.0, "Combat Vehicle"]  ]
+        },
+        {
+            "name": "Mobile",
+            "id": 3,
+            "hps": 100,
+            "dmg": 50,
+            "spd": 5,
+            "ukp": [ [5.0, "Light Fuel"], [1.0, "Combat Vehicle"] ]
+        },
+        {
+            "name": "Artillery",
+            "id": 4,
+            "hps": 30,
+            "dmg": 80,
+            "spd": 1,
+            "ukp": [ [5.0, "Heavy Ammo"], [5.0, "Heavy Arms"] ]
+        },
+        {
+            "name": "Shock Troops",
+            "id": 5,
+            "hps": 150,
+            "dmg": 50,
+            "spd": 2,
+            "ukp": [ [5.0, "Heavy Ammo"], [5.0, "Heavy Arms"]  ]
+        },
+        {
+            "name": "Paratrooper",
+            "id": 6,
+            "hps": 100,
+            "dmg": 60,
+            "spd": 2,
+            "ukp": [ [1.0, "Small Arms"] ]
+        },
+        {
+            "name": "Partisan",
+            "id": 7,
+            "hps": 80,
+            "dmg": 40,
+            "spd": 3,
+            "ukp": [ [1.0, "Small Ammo"], [0.5, "Small Arms"] ]
+        },
+        {
+            "name": "Marine",
+            "id": 8,
+            "hps": 80,
+            "dmg": 40,
+            "spd": 2,
+            "ukp": [ [5.0, "Small Ammo"], [1, "Small Arms"] ]
+        },
+        {
+            "name": "Spec Ops",
+            "id": 9,
+            "hps": 75,
+            "dmg": 75,
+            "spd": 3,
+            "ukp": [ [5.0, "Small Ammo"], [1.0, "Small Arms"], [1.0, "Medical Supplies"], [1.0, "Cigarettes"] ]
+        }
+    ]
+}
+
