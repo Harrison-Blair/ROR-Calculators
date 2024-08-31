@@ -36,12 +36,19 @@ class Battle:
 
                 stats = self.GetBaseUnitStats(choice)
 
-                u = unit.Unit(stats[0][1], stats[1][1], stats[2][1], stats[3][1], stats[4][1], stats[5][1], stats[6][1], stats[7][1])
+                utils.CLS()
+                utils.PrintMenu("HEALTH MENU")
+                print(f"How much health does the unit have [1-{stats[4][1]}] ? ")
+                amt = float(input())
+
+                if (not (0 < amt <= stats[4][1])):
+                    raise Exception("Invalid health selection, try again")
+
+                u = unit.Unit(stats[0][1], stats[1][1], stats[2][1], amt, stats[4][1], stats[5][1], stats[6][1], stats[7][1])
 
                 u.ModifiersMenu()
 
                 return u
-
             except Exception as e:
                 utils.PrintErrorMenu(str(e))
 
@@ -78,9 +85,6 @@ class Battle:
 
 
     def SimulateCombat(self, atkr, defr):
-        t_atkr = atkr
-        t_defr = defr
-
         m_atkr = 1 + self.CalcUnitTotalMod(atkr)
         m_defr = 1 + self.CalcUnitTotalMod(defr)
 
@@ -98,6 +102,11 @@ class Battle:
 
         d_hp = d_p_hp - a_atk
         a_hp = a_p_hp - d_atk
+
+        if (d_hp < 0):
+            d_hp = 0
+        if (a_hp < 0):
+            a_hp = 0
 
         while True:
             utils.CLS()
@@ -134,6 +143,7 @@ class Battle:
             print("\t1. Name & Save Battle")
             print("\t2. Edit Attacker or Defender")
             print("\t3. Flip Attacker & Defender")
+            print("\t4. Continue Battle")
             print("\n\t[E]xit")
 
             try:
@@ -142,10 +152,10 @@ class Battle:
                 if (choice.lower() == "e"):
                     return
             
-                if (0 < int(choice) < 4):
+                if (0 < int(choice) < 5):
                     match int(choice):
                         case 1:
-                            self.NameAndSaveBattle(self.name, t_atkr, t_defr)
+                            self.NameAndSaveBattle(self.name, atkr, defr)
                         case 2:
                             try:
                                 c = input("\nDo you want to modify the [A]ttacker or [D]efender?")
@@ -164,6 +174,10 @@ class Battle:
                         case 3:
                             self.SimulateCombat(defr, atkr)
                             return
+                        case 4:
+                            atkr.TakeDamage(d_atk)
+                            defr.TakeDamage(a_atk)
+                            self.SimulateCombat(atkr, defr)
             except Exception as e:
                 print(str(e))
 

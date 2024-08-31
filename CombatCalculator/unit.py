@@ -163,4 +163,9 @@ class Unit:
 
             except:
                 print("***Bad input, try again***")
-    
+
+    def TakeDamage(self, amt):
+        self.health -= amt
+
+        if (self.health < 0):
+            self.health = 0 
