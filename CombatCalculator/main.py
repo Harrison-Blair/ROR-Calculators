@@ -37,7 +37,6 @@ def main():
                 raise Exception("Invalid Choice")
         except Exception as e:
             utils.PrintErrorMenu(str(e))
-    
 
 if __name__ == "__main__":
     main()
