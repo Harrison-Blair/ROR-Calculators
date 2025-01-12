@@ -1,0 +1,74 @@
+[
+{
+    "type": "Infantry",
+    "symbol": "{BLACK CIRCLE}",
+    "hps": 100,
+    "dmg": 60,
+    "spd": 2,
+    "ukp": [["Small Arms", 1], ["Light Ammo", 5]]
+},
+{
+    "type": "Armor",
+    "symbol": "{BLACK SQUARE}",
+    "hps": 200,
+    "dmg": 200,
+    "spd": 3,
+    "ukp": [["Heavy Arms", 1], ["Combat Vehicle", 2], ["Heavy Fuel", 10], ["Heavy Ammo", 4]]
+},
+{
+    "type": "Mobile",
+    "symbol": "{BOLD WHITE CIRCLE}",
+    "hps": 100,
+    "dmg": 50,
+    "spd": 5,
+    "ukp": [["Small Arms", 1],["Combat Vehicle", 1], ["Light Fuel", 10], ["Light Ammo", 5]]
+},
+{
+    "type": "Artillery",
+    "symbol": "{BLACK UP-POINTING TRIANGLE}",
+    "hps": 30,
+    "dmg": 80,
+    "spd": 1,
+    "ukp": [["Heavy Arms", 5],["Heavy Ammo", 10]] 
+},
+{
+    "type": "Shock Troops",
+    "symbol": "{LIGHTNING MOOD}",
+    "hps": 150,
+    "dmg": 50,
+    "spd": 2,
+    "ukp": [["Heavy Arms", 5],["Heavy Ammo", 10]] 
+},
+{
+    "type": "Paratrooper",
+    "symbol": "{TOP HALF BLACK CIRCLE}",
+    "hps": 100,
+    "dmg": 60,
+    "spd": 2,
+    "ukp": [["Small Arms", 3],["Light Ammo", 10]] 
+},
+{
+    "type": "Partisan",
+    "symbol": "{BLACK STAR}",
+    "hps": 80,
+    "dmg": 40,
+    "spd": 3,
+    "ukp": [["Small Arms", 0.5],["Light Ammo", 10]] 
+},
+{
+    "type": "Militia",
+    "symbol": "{NEGATIVE CIRCLED LATIN CAPITAL LETTER M}",
+    "hps": 60,
+    "dmg": 40,
+    "spd": 3,
+    "ukp": [] 
+},
+{
+    "type": "Marine",
+    "symbol": "{BLACK DROPLET}",
+    "hps": 80,
+    "dmg": 40,
+    "spd": 2,
+    "ukp": [["Small Arms", 1],["Light Ammo", 5]] 
+}
+]

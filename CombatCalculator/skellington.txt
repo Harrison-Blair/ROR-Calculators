@@ -1,0 +1,10 @@
+- Players
+
+PLAYERS have a series of UNITS
+
+UNITS have a series of STATS
+- found in units.json
+
+Abilities?
+
+Battle upkeep: 4 ammo, 1 main unit resource

@@ -1,49 +1,14 @@
-"""
-Utility functions and varibles used across files
+# Utility function file for the Reform or Revolution project
 
-Mainly repetative tasks like clearing screen & generating menu headers
-
-Variables are ones used across files, like troop names/types, etc.
-
-"""
-import json
 import os
+import json
 
-# FILE READ/WRITE RELATED FUNCTIONS
+UNIT_DEFAULTS = []
 
-def LoadRecentBattles():
-    try:
-        cdir = os.path.dirname(__file__)
-        rdir = "data/playerdata/rbattles.json"
-        absdir = os.path.join(cdir, rdir)
-        f = open(absdir, 'r')
-        data = json.load(f)
-        f.close()
+def LoadDefaults():
+    LoadUnitDefaults()
 
-        return data
-    except Exception as e:
-        PrintErrorMenu(str(e))
-        return None
-
-def LoadUnitTypes():
-    try:
-        cdir = os.path.dirname(__file__)
-        rdir = "data/units.json"
-        absdir = os.path.join(cdir, rdir)
-        f = open(absdir, 'r')
-        data = json.load(f)
-        f.close()
-
-        return data['unit_types']
-    except Exception as e:
-        PrintErrorMenu(str(e))
-        return None
-
-# MENU/VISUAL RELATED FUNCTIONS
-
-def CLS(numlines=100):
-    """Clears screen depending on OS"""
-
+def CLS():
     # Thanks to Steven D'Aprano, http://www.velocityreviews.com/forums
     if os.name == "posix":
     # Unix, Linux, macOS, BSD, etc.
@@ -53,7 +18,7 @@ def CLS(numlines=100):
         os.system('CLS')
     else:
     # Fallback for other operating systems.
-        print('\n' * numlines)
+        print('\n' * 100)
 
 def PrintMenu(name="MENU NAME", length=80):
     """ Prints a given menu name at a given length with bars surrounding """
@@ -64,46 +29,53 @@ def PrintMenu(name="MENU NAME", length=80):
     print("=" * length)
 
 def PrintSubheader(name="Subheading", length=80):
-    """Prints a subheading at a given length"""
+    """ Prints a subheading at a given length """
     print(name)
     print("*" * length)
 
 def PrintErrorMenu(error=None):
-    """ Prints an error message, and then returns the player to the previous menu 
-    
-        print("\n\x1B[3m(italicized!)\x1B[0m") -> Italics in console
-    """
+    """ Prints an error message, and then returns """
     PrintMenu("ERROR MENU")
     print("\nAn error has occured!")
     if (error != None):
         print(f"\n{error}")
     input("\n\x1B[3mPress enter to continue...\x1B[0m")
 
-def PrintUnitInfo(nums=False):
-    """ Prints the Unit Type data to the console """
-    types = LoadUnitTypes()
+def LoadUnitDefaults():
+    """ Loads the default units from the JSON file """
+    global UNIT_DEFAULTS
+    with open("units.json", "r") as f:
+        UNIT_DEFAULTS = json.load(f)
 
-    if (types == None):
-        return
+def PrintUnitStats(numbered=False):
+    """ Prints the unit stats table from the loaded defaults """
+    if len(UNIT_DEFAULTS) == 0:
+        LoadUnitDefaults()
 
-    for i in types:
-        if (i['id'] > 0):
-            print("-" * 65)
-            if(nums):
-                print(f"Unit ID# : {i['id']}")
-            print(f"Unit Name : {i['name'].upper()}")
-            print(f"\nStats : ")
-            print(f"\t{format("Max Health", "<25")} : {i['hps']}")
-            print(f"\t{format("Dammage/Attack", "<25")} : {i['dmg']}")
-            print(f"\t{format("Speed", "<25")} : {i['spd']}")
-            print(f"\nUpkeep : ")
-            for j in i['ukp']:
-                print(f"\t- {j[0]} {j[1]}")
-            
-def PrintUnitInfoMenu():
-    CLS()
-    PrintMenu("UNIT INFO MENU")
-    
-    PrintUnitInfo()
+    type_width = 16
+    symbol_width = 11
+    stat_width = 7
+    ukp_width = 25
 
-    input("\n\x1B[3mPress enter to continue...\x1B[0m")
+    if numbered:
+        print(f"|{"###".center(stat_width)}|{"TYPE".center(type_width)}|{"SYMBOL".center(symbol_width)}|{"HPS".center(stat_width)}|{"DMG".center(stat_width)}|{"SPD".center(stat_width)}|{"YEARLY UPKEEP".center(ukp_width)}|")
+        for i, unit in enumerate(UNIT_DEFAULTS):
+            print(f"|{"-" * stat_width}|{"-" * type_width}|{"-" * symbol_width}|{"-" * stat_width}|{"-" * stat_width}|{"-" * stat_width}|{"-" * ukp_width}|")
+            if not unit['ukp']:
+                print(f"|{str(i).center(stat_width)}|{str(unit['type']).center(type_width)}|{eval(r"'\N" + unit['symbol'] + "'").center(symbol_width)}|{str(unit['hps']).center(stat_width)}|{str(unit['dmg']).center(stat_width)}|{str(unit['spd']).center(stat_width)}|{"N/A".center(ukp_width)}|")
+            else:
+                print(f"|{str(i).center(stat_width)}|{str(unit['type']).center(type_width)}|{eval(r"'\N" + unit['symbol'] + "'").center(symbol_width)}|{str(unit['hps']).center(stat_width)}|{str(unit['dmg']).center(stat_width)}|{str(unit['spd']).center(stat_width)}|{unit['ukp'][0][1] : >5} {unit['ukp'][0][0].ljust(ukp_width - 6)}|")
+                for resource in unit['ukp'][1:]:
+                    print(f"|{" " * stat_width}|{" " * type_width}|{" " * symbol_width}|{" " * stat_width}|{" " * stat_width}|{" " * stat_width}|{resource[1] : >5} {resource[0].ljust(ukp_width - 6)}|")
+        print(f"|{"-" * stat_width}|{"-" * type_width}|{"-" * symbol_width}|{"-" * stat_width}|{"-" * stat_width}|{"-" * stat_width}|{"-" * ukp_width}|")
+    else:
+        print(f"|{"TYPE".center(type_width)}|{"SYMBOL".center(symbol_width)}|{"HPS".center(stat_width)}|{"DMG".center(stat_width)}|{"SPD".center(stat_width)}|{"YEARLY UPKEEP".center(ukp_width)}|")
+        for unit in UNIT_DEFAULTS:
+            print(f"|{"-" * type_width}|{"-" * symbol_width}|{"-" * stat_width}|{"-" * stat_width}|{"-" * stat_width}|{"-" * ukp_width}|")
+            if not unit['ukp']:
+                print(f"|{str(unit['type']).center(type_width)}|{eval(r"'\N" + unit['symbol'] + "'").center(symbol_width)}|{str(unit['hps']).center(stat_width)}|{str(unit['dmg']).center(stat_width)}|{str(unit['spd']).center(stat_width)}|{"N/A".center(ukp_width)}|")
+            else:
+                print(f"|{str(unit['type']).center(type_width)}|{eval(r"'\N" + unit['symbol'] + "'").center(symbol_width)}|{str(unit['hps']).center(stat_width)}|{str(unit['dmg']).center(stat_width)}|{str(unit['spd']).center(stat_width)}|{unit['ukp'][0][1] : >5} {unit['ukp'][0][0].ljust(ukp_width - 6)}|")
+                for resource in unit['ukp'][1:]:
+                    print(f"|{" " * type_width}|{" " * symbol_width}|{" " * stat_width}|{" " * stat_width}|{" " * stat_width}|{resource[1] : >5} {resource[0].ljust(ukp_width - 6)}|")
+        print(f"|{"-" * type_width}|{"-" * symbol_width}|{"-" * stat_width}|{"-" * stat_width}|{"-" * stat_width}|{"-" * ukp_width}|")
