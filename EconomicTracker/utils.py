@@ -76,7 +76,7 @@ def CreatePlayerData():
     
     return name, inds, agrs, mins, Industry, Agriculture, Mining, ImpExp, ImpExp
 
-def LoadPlayerData():
+def LoadPlayerData(): 
     with open('player.json', 'r') as file:
         data = json.load(file)
         if len(data) == 0:
@@ -126,12 +126,12 @@ def LoadPlayerData():
                 IndustryImports.append([res, imp])
                 IndustryExports.append([res, exp])
 
-            Imports.append(AgricultureImports)
-            Imports.append(MiningImports)
-            Imports.append(IndustryImports)
+        Imports.append(AgricultureImports)
+        Imports.append(MiningImports)
+        Imports.append(IndustryImports)
 
-            Exports.append(AgricultureExports)
-            Exports.append(MiningExports)
-            Exports.append(IndustryExports)
+        Exports.append(AgricultureExports)
+        Exports.append(MiningExports)
+        Exports.append(IndustryExports)
 
         return data['name'], data['IS'], data['AS'], data['MS'], Industry, Agriculture, Mining, Imports, Exports

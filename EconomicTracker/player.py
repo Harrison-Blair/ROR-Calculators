@@ -41,11 +41,11 @@ class Player:
             PlayerData['Mining'].append((c[0].name, c[1]))
 
         
-        for i in range(3):
+        for i in range(len(self.Imports)):
             for c in self.Imports[i]:
                 PlayerData['Imports'][i].append((c[0].name, c[1]))
 
-        for i in range(3):
+        for i in range(len(self.Exports)):
             for c in self.Exports[i]:
                 PlayerData['Exports'][i].append((c[0].name, c[1]))
 
@@ -65,10 +65,15 @@ class Player:
             print(f"2. Increase Industry")
             print(f"3. Allocate Industry")
             print(f"4. Manage Imports/Exports")
+            print(f"5. Modify Policy")
             print("[O/o] Game Options")
             print("[E/e] Save and Exit")
 
             c = input("\nEnter a number [1-4]: ")
+
+            if c.lower() == "o":
+                self.GameOptions()
+                continue
 
             if c.lower() == "e":
                 self.SavePlayer()
@@ -86,6 +91,8 @@ class Player:
                         self.AllocateIndustry()
                     case 4:
                         self.ManageImportsExports()
+                    case 5:
+                        self.ModifyPolicy()
                     case _: # Default
                         raise Exception("Invalid input")
 
@@ -286,10 +293,12 @@ class Player:
                         if recipie == "e":
                             break
 
-                        recipie = int(recipie) - 1
+                        recipie = int(recipie)
 
                         if not 0 < recipie < len(resource.Ingredients) + 1:
                             raise Exception("Invalid input")
+                        
+                        recipie -= 1
                     
                     print("\nHow much would you like to allocate?")
 
@@ -346,17 +355,92 @@ class Player:
 
                 match c:
                     case 1:
-                        self.AddResource()
+                        self.CreateResource()
                     case _: # Default
                         raise Exception("Invalid input")
                     
             except Exception as e:
                 utils.PrintErrorMenu(e)
 
-    def AddResource(self):
-        while True:
-            utils.CLS()
-            utils.PrintMenu("Add Resource")
 
-            input()
-            return
+    def CreateResource(self):
+        while True:
+                utils.CLS()
+                utils.PrintMenu("Add Resource")
+                print("What type of resource would you like to add?")
+                print("1. Agriculture")
+                print("2. Mining")
+                print("3. Industry")
+                print("[E/e] Exit")
+
+                c = input("\nEnter a number [1-3]: ")
+
+                if c.lower() == "e":
+                    break
+
+                try:
+                    c = int(c)
+
+                    if not c in {1, 2, 3}:
+                        raise Exception("Invalid input")
+                    
+                    n = input("\nEnter the name of the resource: ")
+                    isc = int(input("\nEnter the Industry Score Cost: "))
+                    q = int(input("\nEnter the Quantity produced: "))
+                    cost = float(input("\nEnter the cost: "))
+
+                    match c: # Append to resource list, imports, exports, and save to resources.json
+                        case 1: # Agriculture
+                            facility = f"{n} Farm"
+                            com = comodity.Comodity(n, isc, q, cost, facility)
+                            self.Agriculture.append([com, 0])
+                            break
+                        case 2: # Mining
+                            facility = f"{n} Mine"
+                            com = comodity.Comodity(n, isc, q, cost, facility)
+                            self.Mining.append([com, 0])
+                            break
+                        case 3: # Industry
+                            facility = input("\nEnter the facility the item is produced in: ")
+                            recipies = []
+
+                            while True:
+                                print("\nWould you like to add a recipie? [Y/n]")
+                                i = input("\nEnter a letter: ")
+
+                                if i.lower() == "n":
+                                    break
+                                
+                                recipie = []
+                                while True:
+                                    print("\nWould you like to add an input? [Y/n]")
+                                    i = input("\nEnter a letter: ")
+
+                                    if i.lower() == "n":
+                                        recipies.append(recipie)
+                                        break
+                                    
+                                    name = input("\nEnter the name of the input: ")
+                                    quantity = int(input("\nEnter the quantity of the input: "))
+
+                                    recipie.append([name, quantity])
+                            
+                            com = comodity.Comodity(n, isc, q, cost, facility, recipies)
+                            com = self.Industry.append([com, [0]])
+                    self.Imports[c - 1].append([com, 0])
+                    self.Exports[c - 1].append([com, 0])
+                    
+                    with open('resources.json', 'r') as file:
+                        resources = json.load(file)
+
+                    resources.append({"name": n, "ISC": isc, "Quantity": q, "Cost": cost, "type": ["Agriculture", "Mining", "Industry"][c - 1], "Facility": facility, "Input": recipies})
+
+                    with open('resources.json', 'w') as file:
+                        json.dump(resources, file)
+
+                except Exception as e:
+                    utils.PrintErrorMenu(e)
+                return
+
+    def ModifyPolicy(self):
+        pass
