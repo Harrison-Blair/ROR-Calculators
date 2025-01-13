@@ -327,3 +327,36 @@ class Player:
 
     def ManageImportsExports(self):
         pass
+
+    def GameOptions(self):
+        while True:
+            utils.CLS()
+            utils.PrintMenu("Game Options")
+            print("1. Add Resource")
+
+            print("[E/e] Exit")
+
+            c = input("\nEnter a number [1-x]: ")
+
+            if c.lower() == "e":
+                break
+
+            try:
+                c = int(c)
+
+                match c:
+                    case 1:
+                        self.AddResource()
+                    case _: # Default
+                        raise Exception("Invalid input")
+                    
+            except Exception as e:
+                utils.PrintErrorMenu(e)
+
+    def AddResource(self):
+        while True:
+            utils.CLS()
+            utils.PrintMenu("Add Resource")
+
+            input()
+            return
