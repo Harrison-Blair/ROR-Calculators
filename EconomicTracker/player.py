@@ -156,9 +156,9 @@ class Player:
                 for r, recipie in enumerate(c.Ingredients):
                     if r != 0:
                         print(f"|{" ".center(idw)}|{" ".center(namew)}|{"OR".center(inputw)}|{" ".center(pw)}|{" ".center(isaw)}|{" ".center(iscw)}|{" ".center(qw)}|{" ".center(mvw)}|{" ".center(fw)}")
-                        print(f"|{" ".center(idw)}|{" ".center(namew)}|{str(recipie[0][1]).rjust(3)}, {str(recipie[0][0]).ljust(inputw - 5)}|{" ".center(pw)}|{str(isa[r]).center(isaw)}|{" ".center(iscw)}|{" ".center(qw)}|{" ".center(mvw)}|{" ".center(fw)}")
+                        print(f"|{" ".center(idw)}|{" ".center(namew)}|{str(recipie[0][1]).rjust(3)}, {str(recipie[0][0]).ljust(inputw - 5)}|{str((isa[r] / c.ISC) * c.Quantity).center(pw)}|{str(isa[r]).center(isaw)}|{" ".center(iscw)}|{" ".center(qw)}|{" ".center(mvw)}|{" ".center(fw)}")
                     else:
-                        print(f"|{str(num).center(idw)}|{str(c.name).center(namew)}|{str(recipie[0][1]).rjust(3)}, {str(recipie[0][0]).ljust(inputw - 5)}|{" ".center(pw)}|{str(isa[r]).center(isaw)}|{str(c.ISC).center(iscw)}|{str(c.Quantity).center(qw)}|{str(c.Cost).center(mvw)}|{str(c.Facility).center(fw)}")
+                        print(f"|{str(num).center(idw)}|{str(c.name).center(namew)}|{str(recipie[0][1]).rjust(3)}, {str(recipie[0][0]).ljust(inputw - 5)}|{str((isa[r] / c.ISC) * c.Quantity).center(pw)}|{str(isa[r]).center(isaw)}|{str(c.ISC).center(iscw)}|{str(c.Quantity).center(qw)}|{str(c.Cost).center(mvw)}|{str(c.Facility).center(fw)}")
 
                 for i, ingredient in enumerate(recipie):
                     if i == 0:
