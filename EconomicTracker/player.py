@@ -13,7 +13,6 @@ class Player:
         self.Mining = Mining
         self.Imports = Imports
         self.Exports = Exports
-        self.PrivateSector = []
         self.Consumption = []
 
         self.SavePlayer()
