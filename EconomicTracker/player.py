@@ -4,31 +4,54 @@ import comodity
 
 class Player:
     def __init__(self, name, IS, AS, MS, Industry, Agriculture, Mining, Imports, Exports):
+        # Country Info
         self.name = name
+
+        # Industry, Agriculture, Mining Scores
         self.IndustryScore = IS
         self.AgricultureScore = AS
         self.MiningScore = MS
+
+        # Industry, Agriculture, Mining assignments/allocations
         self.Industry = Industry
         self.Agriculture = Agriculture
         self.Mining = Mining
+
+        # Imports, Exports
         self.Imports = Imports
         self.Exports = Exports
-        self.Consumption = []
+
+        # Consumption
+        self.PopConsumptionRate = []
+        self.IndustryConsumption = []
+        self.ActionConsumption = []
 
         self.SavePlayer()
 
     def SavePlayer(self):
         PlayerData = {}
+
+        # Country Info
         PlayerData['name'] = self.name
+
+        # Industry, Agriculture, Mining Scores
         PlayerData['IS'] = self.IndustryScore
         PlayerData['AS'] = self.AgricultureScore
         PlayerData['MS'] = self.MiningScore
 
+        # Industry, Agriculture, Mining assignments/allocations
         PlayerData['Industry'] = []
         PlayerData['Agriculture'] = []
         PlayerData['Mining'] = []
+
+        # Imports, Exports
         PlayerData['Imports'] = [[],[],[]]
         PlayerData['Exports'] = [[],[],[]]
+
+        # Consumption
+        PlayerData['PopConsumptionRate'] = []
+        PlayerData['IndustryConsumption'] = []
+        PlayerData['ActionConsumption'] = []
 
         for c in self.Industry:
             PlayerData['Industry'].append((c[0].name, c[1]))
@@ -39,7 +62,6 @@ class Player:
         for c in self.Mining:
             PlayerData['Mining'].append((c[0].name, c[1]))
 
-        
         for i in range(len(self.Imports)):
             for c in self.Imports[i]:
                 PlayerData['Imports'][i].append((c[0].name, c[1]))

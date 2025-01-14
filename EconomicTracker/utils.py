@@ -48,6 +48,8 @@ def CreatePlayerData():
     MiningImpExp = []
     IndustryImpExp = []
 
+    Consumption = []
+
     with open('resources.json', 'r') as file:
         resources = json.load(file)
 
@@ -73,8 +75,11 @@ def CreatePlayerData():
     ImpExp.append(AgricultureImpExp)
     ImpExp.append(MiningImpExp)
     ImpExp.append(IndustryImpExp)
+
+    for i in range(3):
+        Consumption.append(ImpExp)
     
-    return name, inds, agrs, mins, Industry, Agriculture, Mining, ImpExp, ImpExp
+    return name, inds, agrs, mins, Industry, Agriculture, Mining, ImpExp, ImpExp, Consumption
 
 def LoadPlayerData(): 
     with open('player.json', 'r') as file:
