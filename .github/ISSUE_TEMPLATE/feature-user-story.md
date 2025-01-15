@@ -1,5 +1,5 @@
 ---
-name: User Story
+name: Feature/User Story
 about: User Story Template
 title: Feature | FeatureTitle
 labels: enhancement
