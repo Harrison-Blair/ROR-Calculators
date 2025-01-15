@@ -128,7 +128,7 @@ class Player:
 
     def PrintResources(self, type, id=None):
         #"| # | Name | Inputs | Con | Req | Gov | P | ISA | ISC | Q | M.V. | Facility |"
-        #"  5    25      25      5     5     5    5    5     5    5    7         19    "
+        #"  5    25      25      7     7     7    5    5     5    5    7         19    "
         idw = 5
         namew = 23
         inputw = 23
