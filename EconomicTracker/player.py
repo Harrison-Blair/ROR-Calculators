@@ -25,9 +25,6 @@ class Player:
         # Consumption
         self.Consumption = Consumption
 
-        # Stockpile
-        self.Stockpile = []
-
         self.SavePlayer()
 
     def SavePlayer(self):
