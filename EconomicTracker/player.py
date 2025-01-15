@@ -354,6 +354,8 @@ class Player:
                                 self.Industry[id][1][0] = ind
                     else:
                         self.Industry[id][1][recipie] = ind
+
+                    self.CalculateIndustryConsumption()
                 else:
                     raise Exception("Invalid input")
             except Exception as e:
@@ -386,6 +388,21 @@ class Player:
                     
             except Exception as e:
                 utils.PrintErrorMenu(e)
+
+    def CalculateIndustryConsumption(self):
+        for res, isa in self.Industry:
+            for i, recipie in enumerate(res.Ingredients):
+                for r, q in recipie:
+                    for s, sector in enumerate(self.Consumption[1]):
+                        for n, comodity in enumerate(sector):
+                            if comodity[0].name == r:
+                                try:
+                                    while sum(self.Consumption[1][s][n][1]) != q * (isa[i] / res.ISC):
+                                        utils.CLS()
+                                        utils.PrintMenu("Ind. Consumption Alloc.")
+                                        input()
+                                except:
+                                    self.Consumption[1][s][n][1] = q * (isa[i] / res.ISC)
 
 
     def CreateResource(self):
