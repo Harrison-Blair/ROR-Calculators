@@ -115,9 +115,7 @@ def LoadPlayerData():
             print(f"{resource}")
             imp = next((com[1] for com in data['Imports'] if com[0] == resource['name']), 0)
             exp = next((com[1] for com in data['Exports'] if com[0] == resource['name']), 0)
-            PopCon = next((com[1] for com in data['Consumption'][0] if com[0] == resource['name']), 0)
-            IndCon = next((com[1] for com in data['Consumption'][1] if com[0] == resource['name']), 0)
-            ActCon = next((com[1] for com in data['Consumption'][2] if com[0] == resource['name']), 0)
+
 
             if resource['type'] == 'Agriculture':
                 ind = next((com[1] for com in data['Agriculture'] if com[0] == resource['name']), 0)
@@ -125,6 +123,11 @@ def LoadPlayerData():
                 Agriculture.append([res, ind])
                 AgricultureImports.append([res, imp])
                 AgricultureExports.append([res, exp])
+
+                PopCon = next((com[1] for com in data['Consumption'][0][0] if com[0] == resource['name']), 0)
+                IndCon = next((com[1] for com in data['Consumption'][1][0] if com[0] == resource['name']), 0)
+                ActCon = next((com[1] for com in data['Consumption'][2][0] if com[0] == resource['name']), 0)
+
                 Consumption[0][0].append([res, PopCon])
                 Consumption[1][0].append([res, IndCon])
                 Consumption[2][0].append([res, ActCon])
@@ -134,6 +137,11 @@ def LoadPlayerData():
                 Mining.append([res, ind])
                 MiningImports.append([res, imp])
                 MiningExports.append([res, exp])
+
+                PopCon = next((com[1] for com in data['Consumption'][0][1] if com[0] == resource['name']), 0)
+                IndCon = next((com[1] for com in data['Consumption'][1][1] if com[0] == resource['name']), 0)
+                ActCon = next((com[1] for com in data['Consumption'][2][1] if com[0] == resource['name']), 0)
+
                 Consumption[0][1].append([res, PopCon])
                 Consumption[1][1].append([res, IndCon])
                 Consumption[2][1].append([res, ActCon])
@@ -145,6 +153,11 @@ def LoadPlayerData():
                 Industry.append([res, isa])
                 IndustryImports.append([res, imp])
                 IndustryExports.append([res, exp])
+
+                PopCon = next((com[1] for com in data['Consumption'][0][2] if com[0] == resource['name']), 0)
+                IndCon = next((com[1] for com in data['Consumption'][1][2] if com[0] == resource['name']), 0)
+                ActCon = next((com[1] for com in data['Consumption'][2][2] if com[0] == resource['name']), 0)
+
                 Consumption[0][2].append([res, PopCon])
                 Consumption[1][2].append([res, IndCon])
                 Consumption[2][2].append([res, ActCon])

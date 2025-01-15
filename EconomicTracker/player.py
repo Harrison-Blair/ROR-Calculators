@@ -69,7 +69,7 @@ class Player:
         for i in range(len(self.Consumption)):
             for j in range(len(self.Consumption[i])):
                 for c in self.Consumption[i][j]:
-                    PlayerData['Consumption'][i][j].append((c[0].name, c[1]))
+                    PlayerData['Consumption'][i][j].append([c[0].name, c[1]])
 
         with open('player.json', 'w') as file:
             json.dump(PlayerData, file)
@@ -399,8 +399,41 @@ class Player:
                                 try:
                                     while sum(self.Consumption[1][s][n][1]) != q * (isa[i] / res.ISC):
                                         utils.CLS()
-                                        utils.PrintMenu("Ind. Consumption Alloc.")
-                                        input()
+                                        utils.PrintMenu("Ind. Con. Allocation")
+                                        print(f"An item requires manual assignment of the TYPE of resource.")
+                                        
+                                        print(f"Creating {res.name}(s) requires *{q}, {r.upper()}*")
+                                        print(f"\nSince you can make multiple kinds of pipes, you must choose which ones to use to create the {res.name}(s)")
+                                        
+                                        match s:
+                                            case 0:
+                                                self.PrintResources("Agriculture", n)
+                                            case 1:
+                                                self.PrintResources("Mining", n)
+                                            case 2:
+                                                self.PrintResources("Industry", n)
+
+                                        print(f"\nYou have {sum(self.Consumption[1][s][n][1])} {r.upper()} assigned.")
+                                        print(f"\nYou need {q * (isa[i] / res.ISC)} {r.upper()} assigned.")
+
+                                        print()
+
+                                        try:
+                                            recipie = int(input(f"\nWhich recipie would you like to allocate resources from? [1-{len(res.Ingredients)}]:"))
+
+                                            if not 0 < recipie < len(res.Ingredients) + 1:
+                                                raise Exception("Invalid input")
+                                            
+                                            recipie -= 1
+
+                                            amt = float(input(f"\nHow much would you like to allocate?"))
+
+                                            if amt < 0:
+                                                raise Exception("Invalid input")
+                                            
+                                            self.Consumption[1][s][n][1][recipie] = amt
+                                        except Exception as e:
+                                            utils.PrintErrorMenu(e)
                                 except:
                                     self.Consumption[1][s][n][1] = q * (isa[i] / res.ISC)
 
