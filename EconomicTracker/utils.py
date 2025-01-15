@@ -14,12 +14,12 @@ def CLS():
     # Fallback for other operating systems.
         print('\n' * 100)
 
-def PrintMenu(name="MENU NAME", length=120):
+def PrintMenu(name="MENU NAME", length=140):
     """ Prints a given menu name at a given length with bars surrounding """
     print()
     print("=" * length)
     n = name.center(18)
-    print(f"|{n}|" * 6)
+    print(f"|{n}|" * 7)
     print("=" * length)
 
 def PrintErrorMenu(error=None):

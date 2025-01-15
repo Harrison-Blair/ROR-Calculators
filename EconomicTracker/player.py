@@ -114,6 +114,7 @@ class Player:
                         self.IncreaseIndustry()
                     case 3:
                         self.AllocateIndustry()
+                        self.CalculateIndustryConsumption()
                     case 4:
                         self.ManageImportsExports()
                     case 5:
@@ -132,15 +133,17 @@ class Player:
         inputw = 23
         impw = 5 # Not used yet
         expw = 5 # Not used yet
-        conw = 5
-        reqw = 5 # Not used yet
-        govw = 5 # Not used yet
+        conw = 7
+        reqw = 7 # Not used yet
+        govw = 7 # Not used yet
         pw = 7
         isaw = 5
         iscw = 5
         qw = 5
         mvw = 7
         fw = 19
+        print(f"{type + " Sector"}".center(idw + namew + inputw + conw + reqw + govw + pw + isaw + iscw + qw + mvw + fw))
+        print(f"|{"*" * idw}|{"*" * namew}|{"*" * inputw}|{"*" * conw}|{"*" * reqw}|{"*" * govw}|{"*" * pw}|{"*" * isaw}|{"*" * iscw}|{"*" * qw}|{"*" * mvw}|{"*" * fw}")
         print(f"|{"#".center(idw)}|{"Name".center(namew)}|{"Inputs".center(inputw)}|{"Con".center(conw)}|{"Req".center(reqw)}|{"Gov".center(govw)}|{"P".center(pw)}|{"ISA".center(isaw)}|{"ISC".center(iscw)}|{"Q".center(qw)}|{"M.V.".center(mvw)}|{"Facility".center(fw)}")
         print(f"|{"=" * idw}|{"=" * namew}|{"=" * inputw}|{"=" * conw}|{"=" * reqw}|{"=" * govw}|{"=" * pw}|{"=" * isaw}|{"=" * iscw}|{"=" * qw}|{"=" * mvw}|{"=" * fw}")
         if type == "Agriculture":
@@ -174,7 +177,7 @@ class Player:
                 for r, recipie in enumerate(c.Ingredients):
                     if r != 0:
                         print(f"|{" ".center(idw)}|{" ".center(namew)}|{"OR".center(inputw)}|{" ".center(conw)}|{" ".center(reqw)}|{" ".center(govw)}|{" ".center(pw)}|{" ".center(isaw)}|{" ".center(iscw)}|{" ".center(qw)}|{" ".center(mvw)}|{" ".center(fw)}")
-                        print(f"|{" ".center(idw)}|{" ".center(namew)}|{str(recipie[0][1]).rjust(3)}, {str(recipie[0][0]).ljust(inputw - 5)}|{str(self.Consumption[0][2][id][1][r]).center(conw)}|{str(self.Consumption[1][2][id][1][r]).center(reqw)}|{str(self.Consumption[2][2][id][1][r]).center(govw)}||{str((isa[r] / c.ISC) * c.Quantity).center(pw)}|{str(isa[r]).center(isaw)}|{" ".center(iscw)}|{" ".center(qw)}|{" ".center(mvw)}|{" ".center(fw)}")
+                        print(f"|{" ".center(idw)}|{" ".center(namew)}|{str(recipie[0][1]).rjust(3)}, {str(recipie[0][0]).ljust(inputw - 5)}|{str(self.Consumption[0][2][id][1][r]).center(conw)}|{str(self.Consumption[1][2][id][1][r]).center(reqw)}|{str(self.Consumption[2][2][id][1][r]).center(govw)}|{str((isa[r] / c.ISC) * c.Quantity).center(pw)}|{str(isa[r]).center(isaw)}|{" ".center(iscw)}|{" ".center(qw)}|{" ".center(mvw)}|{" ".center(fw)}")
                     else:
                         print(f"|{str(id).center(idw)}|{str(c.name).center(namew)}|{str(recipie[0][1]).rjust(3)}, {str(recipie[0][0]).ljust(inputw - 5)}|{str(self.Consumption[0][2][id][1][r]).center(conw)}|{str(self.Consumption[1][2][id][1][r]).center(reqw)}|{str(self.Consumption[2][2][id][1][r]).center(govw)}|{str((isa[r] / c.ISC) * c.Quantity).center(pw)}|{str(isa[r]).center(isaw)}|{str(c.ISC).center(iscw)}|{str(c.Quantity).center(qw)}|{str(c.Cost).center(mvw)}|{str(c.Facility).center(fw)}")
 
@@ -260,6 +263,7 @@ class Player:
         
     def AllocateIndustry(self):
         while True:
+            self.CalculateIndustryConsumption()
             utils.CLS()
             utils.PrintMenu("Allocate Industry")
             print(f"1. Agriculture Score (ISA/AS): {sum(i[1] for i in self.Agriculture)}/{self.AgricultureScore}")
@@ -356,8 +360,6 @@ class Player:
                                 self.Industry[id][1][0] = ind
                     else:
                         self.Industry[id][1][recipie] = ind
-
-                    self.CalculateIndustryConsumption()
                 else:
                     raise Exception("Invalid input")
             except Exception as e:
@@ -371,6 +373,7 @@ class Player:
             utils.CLS()
             utils.PrintMenu("Game Options")
             print("1. Add Resource")
+            print("2. Modify Population Consumption")
 
             print("[E/e] Exit")
 
@@ -385,9 +388,88 @@ class Player:
                 match c:
                     case 1:
                         self.CreateResource()
+                    case 2:
+                        self.ModifyPopulationConsumption()
                     case _: # Default
                         raise Exception("Invalid input")
                     
+            except Exception as e:
+                utils.PrintErrorMenu(e)
+
+    def ModifyPopulationConsumption(self):
+        while True:
+            utils.CLS()
+            utils.PrintMenu("Mod. Pop. Con.")
+            self.PrintResources("Agriculture")
+            self.PrintResources("Mining")
+            self.PrintResources("Industry")
+
+            print("\n[E/e] Exit")
+
+            try:
+                s = input("\nWhich sector would you like to modify? [1-3]: ")
+
+                if s.lower() == "e":
+                    break
+
+                s = int(s)
+
+                if not 0 < s < 4:
+                    raise Exception("Invalid input")
+                
+                s -= 1
+
+                utils.CLS()
+                utils.PrintMenu("Mod. Pop. Con.")
+                match s:
+                    case 0:
+                        self.PrintResources("Agriculture")
+                        max = len(self.Agriculture) - 1
+                    case 1:
+                        self.PrintResources("Mining")
+                        max = len(self.Mining) - 1
+                    case 2:
+                        self.PrintResources("Industry")
+                        max = len(self.Industry) - 1
+
+                n = int(input(f"\nWhich resource would you like to modify? [0-{max}]: "))
+
+                if not -1 < n < max + 1:
+                    raise Exception("Invalid input")
+                
+                val = float(input(f"\nInput the new value: "))
+                
+                if s != 2:
+                    self.Consumption[0][s][n][1] = val
+                    continue
+
+                if sum(self.Consumption[0][s][n][1]) == val:
+                    for i, c in enumerate(self.Consumption[0][s][n][1]):
+                        self.Consumption[0][s][n][1][i] = 0
+
+                while sum(self.Consumption[0][s][n][1]) != val:
+                    utils.CLS()
+                    utils.PrintMenu("Mod. Pop. Con.")
+                    print(f"\nYou must manually assign the TYPE of resource for {self.Consumption[0][s][n][0].name}.")
+                    
+                    self.PrintResources("Industry", n)
+
+                    print(f"\nYou have {sum(self.Consumption[0][s][n][1])}/{val} assigned.")
+
+                    r = int(input(f"\nWhich recipie would you like to allocate resources from? [1-{len(self.Consumption[0][s][n][0].Ingredients)}]: "))
+
+                    if not 0 < r < len(self.Consumption[0][s][n][0].Ingredients) + 1:
+                        raise Exception("Invalid input")
+                    
+                    r -= 1
+
+                    amt = float(input(f"\nAmount to allocate: "))
+
+                    if amt < 0:
+                        raise Exception("Invalid input")
+                    
+                    self.Consumption[0][s][n][1][r] = amt
+
             except Exception as e:
                 utils.PrintErrorMenu(e)
 
