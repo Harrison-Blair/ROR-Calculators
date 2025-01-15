@@ -66,6 +66,11 @@ class Player:
             for c in self.Exports[i]:
                 PlayerData['Exports'][i].append((c[0].name, c[1]))
 
+        for i in range(len(self.Consumption)):
+            for j in range(len(self.Consumption[i])):
+                for c in self.Consumption[i][j]:
+                    PlayerData['Consumption'][i][j].append((c[0].name, c[1]))
+
         with open('player.json', 'w') as file:
             json.dump(PlayerData, file)
 
