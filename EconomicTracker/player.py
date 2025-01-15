@@ -3,7 +3,7 @@ import utils
 import comodity
 
 class Player:
-    def __init__(self, name, IS, AS, MS, Industry, Agriculture, Mining, Imports, Exports):
+    def __init__(self, name, IS, AS, MS, Industry, Agriculture, Mining, Imports, Exports, Consumption):
         # Country Info
         self.name = name
 
@@ -22,9 +22,7 @@ class Player:
         self.Exports = Exports
 
         # Consumption
-        self.PopConsumptionRate = []
-        self.IndustryConsumption = []
-        self.ActionConsumption = []
+        self.Consumption = Consumption
 
         self.SavePlayer()
 
@@ -49,9 +47,7 @@ class Player:
         PlayerData['Exports'] = [[],[],[]]
 
         # Consumption
-        PlayerData['PopConsumptionRate'] = []
-        PlayerData['IndustryConsumption'] = []
-        PlayerData['ActionConsumption'] = []
+        PlayerData['Consumption'] = [[[],[],[]],[[],[],[]],[[],[],[]]]
 
         for c in self.Industry:
             PlayerData['Industry'].append((c[0].name, c[1]))
@@ -91,6 +87,9 @@ class Player:
             print("[E/e] Save and Exit")
 
             c = input("\nEnter a number [1-4]: ")
+
+            if c.lower() == "b":
+                continue
 
             if c.lower() == "o":
                 self.GameOptions()

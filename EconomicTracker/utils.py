@@ -34,6 +34,7 @@ def CreatePlayerData():
     CLS()
     PrintMenu("Create Player")
     name = input("Enter your name: ")
+
     agrs = float(input("Enter your Agricultural Score: "))
     mins = float(input("Enter your Mining Score: "))
     inds = float(input("Enter your Industrial Score: "))
@@ -42,13 +43,13 @@ def CreatePlayerData():
     Agriculture = []
     Mining = []
 
-    ImpExp = []
+    ImpExpCon = []
 
     AgricultureImpExp = []
     MiningImpExp = []
     IndustryImpExp = []
 
-    Consumption = []
+    Consumption = [[[],[],[]],[[],[],[]],[[],[],[]]]
 
     with open('resources.json', 'r') as file:
         resources = json.load(file)
@@ -60,10 +61,14 @@ def CreatePlayerData():
             res = comodity.Comodity(resource['name'], resource['ISC'], resource['Quantity'], resource['Cost'], f"{resource['name']} Farm")
             AgricultureImpExp.append([res, 0.0])
             Agriculture.append([res, 0.0])
+            for i in range(3):
+                Consumption[i][0].append([res, 0.0])
         elif resource['type'] == 'Mining':
             res = comodity.Comodity(resource['name'], resource['ISC'], resource['Quantity'], resource['Cost'], f"{resource['name']} Mine")
             MiningImpExp.append([res, 0.0])
             Mining.append([res, 0.0])
+            for i in range(3):
+                Consumption[i][1].append([res, 0.0])
         elif resource['type'] == 'Industry':
             res = comodity.Comodity(resource['name'], resource['ISC'], resource['Quantity'], resource['Cost'], resource['Facility'], resource['Input'])
             IndustryImpExp.append([res, 0.0])
@@ -71,15 +76,14 @@ def CreatePlayerData():
             for i in resource['Input']:
                 isa.append(0)
             Industry.append([res, isa])
+            for i in range(3):
+                Consumption[i][2].append([res, isa])
 
-    ImpExp.append(AgricultureImpExp)
-    ImpExp.append(MiningImpExp)
-    ImpExp.append(IndustryImpExp)
-
-    for i in range(3):
-        Consumption.append(ImpExp)
+    ImpExpCon.append(AgricultureImpExp)
+    ImpExpCon.append(MiningImpExp)
+    ImpExpCon.append(IndustryImpExp)
     
-    return name, inds, agrs, mins, Industry, Agriculture, Mining, ImpExp, ImpExp, Consumption
+    return name, inds, agrs, mins, Industry, Agriculture, Mining, ImpExpCon, ImpExpCon, Consumption
 
 def LoadPlayerData(): 
     with open('player.json', 'r') as file:
