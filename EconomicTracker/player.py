@@ -25,6 +25,9 @@ class Player:
         # Consumption
         self.Consumption = Consumption
 
+        # Stockpile
+        self.Stockpile = []
+
         self.SavePlayer()
 
     def SavePlayer(self):
@@ -151,25 +154,25 @@ class Player:
             if id != None:
                 c = self.Agriculture[id][0]
                 isa = self.Agriculture[id][1]
-                print(f"|{str(id).center(idw)}|{str(c.name).center(namew)}|{"-".center(inputw)}|{str(self.Consumption[0][0][id][1] * self.population).center(conw)}|{str(self.Consumption[1][0][id][1]).center(reqw)}|{str(self.Consumption[2][0][id][1]).center(govw)}|{str((isa / c.ISC) * c.Quantity).center(pw)}|{str(isa).center(isaw)}|{str(c.ISC).center(iscw)}|{str(c.Quantity).center(qw)}|{str(c.Cost).center(mvw)}|{str(c.Facility).center(fw)}")
+                print(f"|{str(id).center(idw)}|{str(c.name).center(namew)}|{"-".center(inputw)}|{str(self.Consumption[0][0][id][1]).center(conw)}|{str(self.Consumption[1][0][id][1]).center(reqw)}|{str(self.Consumption[2][0][id][1]).center(govw)}|{str((isa / c.ISC) * c.Quantity).center(pw)}|{str(isa).center(isaw)}|{str(c.ISC).center(iscw)}|{str(c.Quantity).center(qw)}|{str(c.Cost).center(mvw)}|{str(c.Facility).center(fw)}")
                 print(f"|{"-" * idw}|{"-" * namew}|{"-" * inputw}|{"-" * conw}|{"-" * reqw}|{"-" * govw}|{"-" * pw}|{"-" * isaw}|{"-" * iscw}|{"-" * qw}|{"-" * mvw}|{"-" * fw}")
                 return
             for num, com in enumerate(self.Agriculture):
                 c = com[0]
                 isa = com[1]
-                print(f"|{str(num).center(idw)}|{str(c.name).center(namew)}|{"-".center(inputw)}|{str(self.Consumption[0][0][num][1] * self.population).center(conw)}|{str(self.Consumption[1][0][num][1]).center(reqw)}|{str(self.Consumption[2][0][num][1]).center(govw)}|{str((isa / c.ISC) * c.Quantity).center(pw)}|{str(isa).center(isaw)}|{str(c.ISC).center(iscw)}|{str(c.Quantity).center(qw)}|{str(c.Cost).center(mvw)}|{str(c.Facility).center(fw)}")
+                print(f"|{str(num).center(idw)}|{str(c.name).center(namew)}|{"-".center(inputw)}|{str(self.Consumption[0][0][num][1]).center(conw)}|{str(self.Consumption[1][0][num][1]).center(reqw)}|{str(self.Consumption[2][0][num][1]).center(govw)}|{str((isa / c.ISC) * c.Quantity).center(pw)}|{str(isa).center(isaw)}|{str(c.ISC).center(iscw)}|{str(c.Quantity).center(qw)}|{str(c.Cost).center(mvw)}|{str(c.Facility).center(fw)}")
                 print(f"|{"-" * idw}|{"-" * namew}|{"-" * inputw}|{"-" * conw}|{"-" * reqw}|{"-" * govw}|{"-" * pw}|{"-" * isaw}|{"-" * iscw}|{"-" * qw}|{"-" * mvw}|{"-" * fw}")
         elif type == "Mining":
             if id != None:
                 c = self.Mining[id][0]
                 isa = self.Mining[id][1]
-                print(f"|{str(id).center(idw)}|{str(c.name).center(namew)}|{"-".center(inputw)}|{str(self.Consumption[0][1][id][1] * self.population).center(conw)}|{str(self.Consumption[1][1][id][1]).center(reqw)}|{str(self.Consumption[2][1][id][1]).center(govw)}|{str((isa / c.ISC) * c.Quantity).center(pw)}|{str(isa).center(isaw)}|{str(c.ISC).center(iscw)}|{str(c.Quantity).center(qw)}|{str(c.Cost).center(mvw)}|{str(c.Facility).center(fw)}")
+                print(f"|{str(id).center(idw)}|{str(c.name).center(namew)}|{"-".center(inputw)}|{str(self.Consumption[0][1][id][1]).center(conw)}|{str(self.Consumption[1][1][id][1]).center(reqw)}|{str(self.Consumption[2][1][id][1]).center(govw)}|{str((isa / c.ISC) * c.Quantity).center(pw)}|{str(isa).center(isaw)}|{str(c.ISC).center(iscw)}|{str(c.Quantity).center(qw)}|{str(c.Cost).center(mvw)}|{str(c.Facility).center(fw)}")
                 print(f"|{"-" * idw}|{"-" * namew}|{"-" * inputw}|{"-" * conw}|{"-" * reqw}|{"-" * govw}|{"-" * pw}|{"-" * isaw}|{"-" * iscw}|{"-" * qw}|{"-" * mvw}|{"-" * fw}")
                 return
             for num, com in enumerate(self.Mining):
                 c = com[0]
                 isa = com[1]
-                print(f"|{str(num).center(idw)}|{str(c.name).center(namew)}|{"-".center(inputw)}|{str(self.Consumption[0][1][num][1] * self.population).center(conw)}|{str(self.Consumption[1][1][num][1]).center(reqw)}|{str(self.Consumption[2][1][num][1]).center(govw)}|{str((isa / c.ISC) * c.Quantity).center(pw)}|{str(isa).center(isaw)}|{str(c.ISC).center(iscw)}|{str(c.Quantity).center(qw)}|{str(c.Cost).center(mvw)}|{str(c.Facility).center(fw)}")
+                print(f"|{str(num).center(idw)}|{str(c.name).center(namew)}|{"-".center(inputw)}|{str(self.Consumption[0][1][num][1]).center(conw)}|{str(self.Consumption[1][1][num][1]).center(reqw)}|{str(self.Consumption[2][1][num][1]).center(govw)}|{str((isa / c.ISC) * c.Quantity).center(pw)}|{str(isa).center(isaw)}|{str(c.ISC).center(iscw)}|{str(c.Quantity).center(qw)}|{str(c.Cost).center(mvw)}|{str(c.Facility).center(fw)}")
                 print(f"|{"-" * idw}|{"-" * namew}|{"-" * inputw}|{"-" * conw}|{"-" * reqw}|{"-" * govw}|{"-" * pw}|{"-" * isaw}|{"-" * iscw}|{"-" * qw}|{"-" * mvw}|{"-" * fw}")
         if type == "Industry":
             if id != None:
@@ -178,9 +181,9 @@ class Player:
                 for r, recipie in enumerate(c.Ingredients):
                     if r != 0:
                         print(f"|{" ".center(idw)}|{" ".center(namew)}|{"OR".center(inputw)}|{" ".center(conw)}|{" ".center(reqw)}|{" ".center(govw)}|{" ".center(pw)}|{" ".center(isaw)}|{" ".center(iscw)}|{" ".center(qw)}|{" ".center(mvw)}|{" ".center(fw)}")
-                        print(f"|{" ".center(idw)}|{" ".center(namew)}|{str(recipie[0][1]).rjust(3)}, {str(recipie[0][0]).ljust(inputw - 5)}|{str(self.Consumption[0][2][id][1][r] * self.population).center(conw)}|{str(self.Consumption[1][2][id][1][r]).center(reqw)}|{str(self.Consumption[2][2][id][1][r]).center(govw)}|{str((isa[r] / c.ISC) * c.Quantity).center(pw)}|{str(isa[r]).center(isaw)}|{" ".center(iscw)}|{" ".center(qw)}|{" ".center(mvw)}|{" ".center(fw)}")
+                        print(f"|{" ".center(idw)}|{" ".center(namew)}|{str(recipie[0][1]).rjust(3)}, {str(recipie[0][0]).ljust(inputw - 5)}|{str(self.Consumption[0][2][id][1][r] ).center(conw)}|{str(self.Consumption[1][2][id][1][r]).center(reqw)}|{str(self.Consumption[2][2][id][1][r]).center(govw)}|{str((isa[r] / c.ISC) * c.Quantity).center(pw)}|{str(isa[r]).center(isaw)}|{" ".center(iscw)}|{" ".center(qw)}|{" ".center(mvw)}|{" ".center(fw)}")
                     else:
-                        print(f"|{str(id).center(idw)}|{str(c.name).center(namew)}|{str(recipie[0][1]).rjust(3)}, {str(recipie[0][0]).ljust(inputw - 5)}|{str(self.Consumption[0][2][id][1][r] * self.population).center(conw)}|{str(self.Consumption[1][2][id][1][r]).center(reqw)}|{str(self.Consumption[2][2][id][1][r]).center(govw)}|{str((isa[r] / c.ISC) * c.Quantity).center(pw)}|{str(isa[r]).center(isaw)}|{str(c.ISC).center(iscw)}|{str(c.Quantity).center(qw)}|{str(c.Cost).center(mvw)}|{str(c.Facility).center(fw)}")
+                        print(f"|{str(id).center(idw)}|{str(c.name).center(namew)}|{str(recipie[0][1]).rjust(3)}, {str(recipie[0][0]).ljust(inputw - 5)}|{str(self.Consumption[0][2][id][1][r]).center(conw)}|{str(self.Consumption[1][2][id][1][r]).center(reqw)}|{str(self.Consumption[2][2][id][1][r]).center(govw)}|{str((isa[r] / c.ISC) * c.Quantity).center(pw)}|{str(isa[r]).center(isaw)}|{str(c.ISC).center(iscw)}|{str(c.Quantity).center(qw)}|{str(c.Cost).center(mvw)}|{str(c.Facility).center(fw)}")
 
                 for i, ingredient in enumerate(recipie):
                     if i == 0:
