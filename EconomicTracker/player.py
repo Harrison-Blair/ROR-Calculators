@@ -414,6 +414,8 @@ class Player:
 
             print("\n[E/e] Exit")
 
+            print("\nNOTE: Consumption is displayed in *PER MILLION POP*")
+
             try:
                 s = input("\nWhich sector would you like to modify? [1-3]: ")
 
@@ -439,6 +441,8 @@ class Player:
                     case 2:
                         self.PrintResources("Industry")
                         max = len(self.Industry) - 1
+
+                print("\nNOTE: Consumption is displayed in *PER MILLION POP*")
 
                 n = int(input(f"\nWhich resource would you like to modify? [0-{max}]: "))
 
