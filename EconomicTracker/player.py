@@ -615,4 +615,27 @@ class Player:
                 return
 
     def ModifyPolicy(self):
+        while True:
+            utils.PrintMenu("Modify Policy")
+            print("1. Tax Policy")
+
+            print("[E/e] Exit")
+
+            c = input("\nEnter a number [1-1]: ")
+
+            if c.lower() == "e":
+                break
+
+            try:
+                c = int(c)
+
+                match c:
+                    case 1:
+                        self.ModifyTaxPolicy()
+                    case _: # Default
+                        raise Exception("Invalid input")
+            except Exception as e:
+                utils.PrintErrorMenu(e)
+
+    def ModifyTaxPolicy(self):
         pass
