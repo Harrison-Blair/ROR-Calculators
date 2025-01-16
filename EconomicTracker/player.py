@@ -9,7 +9,6 @@ class Player:
         self.population = 105.0 # in millions
         self.policy = {
             "PublicIndustry": 10.0,
-            "PrivateIndustry": 90.0
         }
 
         # Industry, Agriculture, Mining Scores
@@ -21,6 +20,8 @@ class Player:
         self.Industry = Industry
         self.Agriculture = Agriculture
         self.Mining = Mining
+
+        self.PrivateIndustry = self.CalculatePrivateIndustry()
 
         # Imports, Exports
         self.Imports = Imports
@@ -371,8 +372,21 @@ class Player:
                         self.Industry[id][1][recipie] = ind
                 else:
                     raise Exception("Invalid input")
+                self.PrivateIndustry = self.CalculatePrivateIndustry()
             except Exception as e:
                 utils.PrintErrorMenu(e)
+
+    def CalculatePrivateIndustry(self):
+        PrivateIndustry = [[],[],[]]
+        for i in range(3):
+            match i:
+                case 0:
+                    for comodity, allocation in self.Agriculture:
+                        PrivateIndustry[i].append([comodity, ((allocation / comodity.ISC) * comodity.Quantity) * (100 - self.policy["PublicIndustry"]) / self.policy["PublicIndustry"]])
+                case 1:
+                    for comodity, allocation in self.Mining:
+                        PrivateIndustry[i].append([comodity, ((allocation / comodity.ISC) * comodity.Quantity) * (100 - self.policy["PublicIndustry"]) / self.policy["PublicIndustry"]])
+        return PrivateIndustry
 
     def ManageImportsExports(self):
         pass
@@ -659,7 +673,9 @@ class Player:
                     raise Exception("Invalid input")
 
                 self.policy['PublicIndustry'] = pub
-                self.policy['PrivateIndustry'] = 100 - pub
+
+                self.PrivateIndustry = self.CalculatePrivateIndustry()
+
                 return
             except Exception as e:
                 utils.PrintErrorMenu(e)
