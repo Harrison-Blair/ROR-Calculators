@@ -121,10 +121,12 @@ class Player:
                     case 3:
                         self.AllocateIndustry()
                         self.CalculateIndustryConsumption()
+                        self.PrivateIndustry = self.CalculatePrivateIndustry()
                     case 4:
                         self.ManageImportsExports()
                     case 5:
                         self.ModifyPolicy()
+                        self.PrivateIndustry = self.CalculatePrivateIndustry()
                     case _: # Default
                         raise Exception("Invalid input")
 
@@ -372,7 +374,6 @@ class Player:
                         self.Industry[id][1][recipie] = ind
                 else:
                     raise Exception("Invalid input")
-                self.PrivateIndustry = self.CalculatePrivateIndustry()
             except Exception as e:
                 utils.PrintErrorMenu(e)
 
@@ -673,8 +674,6 @@ class Player:
                     raise Exception("Invalid input")
 
                 self.policy['PublicIndustry'] = pub
-
-                self.PrivateIndustry = self.CalculatePrivateIndustry()
 
                 return
             except Exception as e:
