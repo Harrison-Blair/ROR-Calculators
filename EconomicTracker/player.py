@@ -3,10 +3,11 @@ import utils
 import comodity
 
 class Player:
-    def __init__(self, name, IS, AS, MS, Industry, Agriculture, Mining, Imports, Exports, Consumption):
+    def __init__(self, info, policy, IS, AS, MS, Industry, Agriculture, Mining, Imports, Exports, Consumption):
         # Country Info
-        self.name = name
-        self.population = 105.0
+        self.info = info
+        self.population = 105.0 # in millions
+        self.policy = policy
 
         # Industry, Agriculture, Mining Scores
         self.IndustryScore = IS
@@ -17,6 +18,8 @@ class Player:
         self.Industry = Industry
         self.Agriculture = Agriculture
         self.Mining = Mining
+
+        self.PrivateIndustry = self.CalculatePrivateIndustry()
 
         # Imports, Exports
         self.Imports = Imports
@@ -31,7 +34,10 @@ class Player:
         PlayerData = {}
 
         # Country Info
-        PlayerData['name'] = self.name
+        PlayerData['info'] = self.info
+
+        # Country Policy
+        PlayerData['policy'] = self.policy
 
         # Industry, Agriculture, Mining Scores
         PlayerData['IS'] = self.IndustryScore
@@ -47,7 +53,7 @@ class Player:
         PlayerData['Imports'] = [[],[],[]]
         PlayerData['Exports'] = [[],[],[]]
 
-        # Consumption
+        # Consumption [Pop] [Ind] [Gov]
         PlayerData['Consumption'] = [[[],[],[]],[[],[],[]],[[],[],[]]]
 
         for c in self.Industry:
@@ -79,7 +85,7 @@ class Player:
         while True:
             utils.CLS()
             utils.PrintMenu("Main Menu")
-            print(f"Name: {self.name}")
+            print(f"Name: {self.info['name']}")
             # Swag overview
 
             print("Menu")
@@ -116,10 +122,12 @@ class Player:
                     case 3:
                         self.AllocateIndustry()
                         self.CalculateIndustryConsumption()
+                        self.PrivateIndustry = self.CalculatePrivateIndustry()
                     case 4:
                         self.ManageImportsExports()
                     case 5:
                         self.ModifyPolicy()
+                        self.PrivateIndustry = self.CalculatePrivateIndustry()
                     case _: # Default
                         raise Exception("Invalid input")
 
@@ -370,6 +378,18 @@ class Player:
             except Exception as e:
                 utils.PrintErrorMenu(e)
 
+    def CalculatePrivateIndustry(self):
+        PrivateIndustry = [[],[],[]]
+        for i in range(3):
+            match i:
+                case 0:
+                    for comodity, allocation in self.Agriculture:
+                        PrivateIndustry[i].append([comodity, ((allocation / comodity.ISC) * comodity.Quantity) * (100 - self.policy["PublicIndustry"]) / self.policy["PublicIndustry"]])
+                case 1:
+                    for comodity, allocation in self.Mining:
+                        PrivateIndustry[i].append([comodity, ((allocation / comodity.ISC) * comodity.Quantity) * (100 - self.policy["PublicIndustry"]) / self.policy["PublicIndustry"]])
+        return PrivateIndustry
+
     def ManageImportsExports(self):
         pass
 
@@ -615,4 +635,48 @@ class Player:
                 return
 
     def ModifyPolicy(self):
-        pass
+        while True:
+            utils.CLS()
+            utils.PrintMenu("Modify Policy")
+            opt = []
+            opt.append("Modify Tax Policy")
+
+            for i, o in enumerate(opt):
+                print(f"{i + 1}. {o}")
+
+            print("[E/e] Exit")
+
+            c = input(f"\nEnter a number [1-{len(opt)}]: ")
+
+            if c.lower() == "e":
+                break
+
+            try:
+                c = int(c)
+
+                match c:
+                    case 1:
+                        self.ModifyTaxPolicy()
+                    case _: # Default
+                        raise Exception("Invalid input")
+            except Exception as e:
+                utils.PrintErrorMenu(e)
+
+    def ModifyTaxPolicy(self):
+        while True:
+            utils.CLS()
+            utils.PrintMenu("Modify Tax Policy")
+
+            try:
+                print(f"The current ratio of [Public : Private] Industry ownership is: [{self.policy['PublicIndustry']} : {100 - self.policy['PublicIndustry']}]")
+                
+                pub = float(input("\nEnter the percentage of INDUSTRY that is PUBLIC: "))
+
+                if not 0 < pub < 100:
+                    raise Exception("Invalid input")
+
+                self.policy['PublicIndustry'] = pub
+
+                return
+            except Exception as e:
+                utils.PrintErrorMenu(e)
