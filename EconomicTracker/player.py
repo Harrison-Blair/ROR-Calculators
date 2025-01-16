@@ -3,13 +3,11 @@ import utils
 import comodity
 
 class Player:
-    def __init__(self, info, IS, AS, MS, Industry, Agriculture, Mining, Imports, Exports, Consumption):
+    def __init__(self, info, policy, IS, AS, MS, Industry, Agriculture, Mining, Imports, Exports, Consumption):
         # Country Info
         self.info = info
         self.population = 105.0 # in millions
-        self.policy = {
-            "PublicIndustry": 10.0,
-        }
+        self.policy = policy
 
         # Industry, Agriculture, Mining Scores
         self.IndustryScore = IS
@@ -37,6 +35,9 @@ class Player:
 
         # Country Info
         PlayerData['info'] = self.info
+
+        # Country Policy
+        PlayerData['policy'] = self.policy
 
         # Industry, Agriculture, Mining Scores
         PlayerData['IS'] = self.IndustryScore
@@ -678,4 +679,3 @@ class Player:
                 return
             except Exception as e:
                 utils.PrintErrorMenu(e)
-            

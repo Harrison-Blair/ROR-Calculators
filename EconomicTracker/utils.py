@@ -33,26 +33,36 @@ def PrintErrorMenu(error=None):
 def CreatePlayerData():
     CLS()
     PrintMenu("Create Player")
+    # Player Info
     info = {}
     
     name = input("Enter your name: ")
     
     info['name'] = name
 
+    # Policy | TODO: Allow user to define policy from character creation?
+    policy = {}
+
+    policy["PublicIndustry"] = 10.0
+
+    # Industry Scores
     agrs = float(input("Enter your Agricultural Score: "))
     mins = float(input("Enter your Mining Score: "))
     inds = float(input("Enter your Industrial Score: "))
 
+    # Industry
     Industry = []
     Agriculture = []
     Mining = []
 
+    # Import/Export
     ImpExpCon = []
 
     AgricultureImpExp = []
     MiningImpExp = []
     IndustryImpExp = []
 
+    # Consumption
     Consumption = [[[],[],[]],[[],[],[]],[[],[],[]]]
 
     with open('resources.json', 'r') as file:
@@ -87,7 +97,7 @@ def CreatePlayerData():
     ImpExpCon.append(MiningImpExp)
     ImpExpCon.append(IndustryImpExp)
     
-    return info, inds, agrs, mins, Industry, Agriculture, Mining, ImpExpCon, ImpExpCon, Consumption
+    return info, policy, inds, agrs, mins, Industry, Agriculture, Mining, ImpExpCon, ImpExpCon, Consumption
 
 def LoadPlayerData(): 
     with open('player.json', 'r') as file:
@@ -174,4 +184,4 @@ def LoadPlayerData():
         Exports.append(MiningExports)
         Exports.append(IndustryExports)
 
-        return data['info'], data['IS'], data['AS'], data['MS'], Industry, Agriculture, Mining, Imports, Exports, Consumption
+        return data['info'], data['policy'], data['IS'], data['AS'], data['MS'], Industry, Agriculture, Mining, Imports, Exports, Consumption
