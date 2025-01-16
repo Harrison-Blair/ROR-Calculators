@@ -668,7 +668,7 @@ class Player:
             utils.PrintMenu("Modify Tax Policy")
 
             try:
-                print(f"The current ratio of [Public : Private] Industry ownership is: [{self.policy['PublicIndustry']} : {self.policy['PrivateIndustry']}]")
+                print(f"The current ratio of [Public : Private] Industry ownership is: [{self.policy['PublicIndustry']} : {100 - self.policy['PublicIndustry']}]")
                 pub = float(input("\nEnter the percentage of INDUSTRY that is PUBLIC: "))
 
                 if not 0 < pub < 100:
