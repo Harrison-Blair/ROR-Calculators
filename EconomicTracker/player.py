@@ -3,10 +3,14 @@ import utils
 import comodity
 
 class Player:
-    def __init__(self, name, IS, AS, MS, Industry, Agriculture, Mining, Imports, Exports, Consumption):
+    def __init__(self, info, IS, AS, MS, Industry, Agriculture, Mining, Imports, Exports, Consumption):
         # Country Info
-        self.name = name
-        self.population = 105.0
+        self.info = info
+        self.population = 105.0 # in millions
+        self.policy = {
+            "PublicIndustry": 10.0,
+            "PrivateIndustry": 90.0
+        }
 
         # Industry, Agriculture, Mining Scores
         self.IndustryScore = IS
@@ -31,7 +35,7 @@ class Player:
         PlayerData = {}
 
         # Country Info
-        PlayerData['name'] = self.name
+        PlayerData['info'] = self.info
 
         # Industry, Agriculture, Mining Scores
         PlayerData['IS'] = self.IndustryScore
@@ -47,7 +51,7 @@ class Player:
         PlayerData['Imports'] = [[],[],[]]
         PlayerData['Exports'] = [[],[],[]]
 
-        # Consumption
+        # Consumption [Pop] [Ind] [Gov]
         PlayerData['Consumption'] = [[[],[],[]],[[],[],[]],[[],[],[]]]
 
         for c in self.Industry:
@@ -79,7 +83,7 @@ class Player:
         while True:
             utils.CLS()
             utils.PrintMenu("Main Menu")
-            print(f"Name: {self.name}")
+            print(f"Name: {self.info['name']}")
             # Swag overview
 
             print("Menu")
@@ -616,12 +620,17 @@ class Player:
 
     def ModifyPolicy(self):
         while True:
+            utils.CLS()
             utils.PrintMenu("Modify Policy")
-            print("1. Tax Policy")
+            opt = []
+            opt.append("Modify Tax Policy")
+
+            for i, o in enumerate(opt):
+                print(f"{i + 1}. {o}")
 
             print("[E/e] Exit")
 
-            c = input("\nEnter a number [1-1]: ")
+            c = input(f"\nEnter a number [1-{len(opt)}]: ")
 
             if c.lower() == "e":
                 break
@@ -638,4 +647,20 @@ class Player:
                 utils.PrintErrorMenu(e)
 
     def ModifyTaxPolicy(self):
-        pass
+        while True:
+            utils.CLS()
+            utils.PrintMenu("Modify Tax Policy")
+
+            try:
+                print(f"The current ratio of [Public : Private] Industry ownership is: [{self.policy['PublicIndustry']} : {self.policy['PrivateIndustry']}]")
+                pub = float(input("\nEnter the percentage of INDUSTRY that is PUBLIC: "))
+
+                if not 0 < pub < 100:
+                    raise Exception("Invalid input")
+
+                self.policy['PublicIndustry'] = pub
+                self.policy['PrivateIndustry'] = 100 - pub
+                return
+            except Exception as e:
+                utils.PrintErrorMenu(e)
+            
