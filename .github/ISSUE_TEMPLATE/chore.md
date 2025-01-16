@@ -7,6 +7,6 @@ assignees: ''
 
 ---
 
-** Describe the task ** 
+# Describe the task
 
-** Reasoning? **
+# Reasoning?
