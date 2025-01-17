@@ -1,6 +1,9 @@
 # Player Directories
 CombatCalculator/data/playerdata/
 
+# Backups
+*.bak
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

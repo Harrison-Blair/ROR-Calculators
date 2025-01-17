@@ -1,5 +1,7 @@
 import os
 import json
+import shutil
+
 import comodity
 
 def CLS():
@@ -33,6 +35,12 @@ def PrintErrorMenu(error=None):
 def CreatePlayerData():
     CLS()
     PrintMenu("Create Player")
+    # Try to backup the player.json file if exists
+    try:
+        shutil.move('player.json', 'player.json.bak')
+    except:
+        pass
+
     # Player Info
     info = {}
     
