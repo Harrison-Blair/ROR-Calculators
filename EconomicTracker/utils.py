@@ -33,14 +33,14 @@ def PrintErrorMenu(error=None):
     input("\n\x1B[3mPress enter to continue...\x1B[0m")
 
 def CreatePlayerData():
+    CLS()
+    PrintMenu("Create Player")
     # Try to backup the player.json file if exists
     try:
         shutil.move('player.json', 'player.json.bak')
     except:
         pass
 
-    CLS()
-    PrintMenu("Create Player")
     # Player Info
     info = {}
     
