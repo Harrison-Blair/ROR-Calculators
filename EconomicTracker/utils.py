@@ -1,5 +1,7 @@
 import os
 import json
+import shutil
+
 import comodity
 
 def CLS():
@@ -31,6 +33,15 @@ def PrintErrorMenu(error=None):
     input("\n\x1B[3mPress enter to continue...\x1B[0m")
 
 def CreatePlayerData():
+    try:
+        with open('player.json', 'r') as file:
+            data = file.read()
+
+        if len(data) != 0:
+            shutil.move('player.json', 'player.json.bak')
+    except:
+        pass
+
     CLS()
     PrintMenu("Create Player")
     # Player Info
