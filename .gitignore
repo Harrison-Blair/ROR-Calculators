@@ -1,5 +1,5 @@
-# Player Directories
-CombatCalculator/data/playerdata/
+# Player Save
+player.json
 
 # Backups
 *.bak
