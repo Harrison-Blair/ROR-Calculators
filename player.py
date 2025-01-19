@@ -26,6 +26,7 @@ class Player:
 
         # Consumption
         self.Consumption = Consumption
+        self.CalculateIndustryConsumption()
 
         self.SavePlayer()
 
@@ -244,16 +245,36 @@ class Player:
 
 
     def CalculateIndustryConsumption(self):
-            for cid, comodity in enumerate(self.PrivateIndustry[2]):
-                for res in self.Resources[2]:
-                    if comodity[0] == res.name:
-                        if sum(comodity[1]) == 0:
-                            continue
-                        for i, recipie in enumerate(res.Ingredients):
-                            if i == 0:
-                                self.Consumption[1][2][cid][1][i] = (comodity[1] / res.ISC) * res.Quantity
-                            else:
-                                self.Consumption[1][2][cid][1][i] = (comodity[1][i] / res.ISC) * res.Quantity
+        for s in self.Consumption[1]:
+            for r in s:
+                try:
+                    for a in r[1]:
+                        a = 0.0
+                except:
+                    r[1] = 0.0
+        
+        # Get allocation of each item in the Public Industry
+        for cid, ca in enumerate(self.PublicIndustry[2]):
+            comodity = ca[0]
+            allocation = ca[1]
+            # Get the resource from the resource list to get info
+            for rid, res in enumerate(self.Resources[2]):
+                if comodity == res.name:
+                    # Get the recepies
+                    for rcid, recipie in enumerate(res.Ingredients):
+                        for input, cost in recipie:
+                            for sid, sector in enumerate(self.Consumption[1]):
+                                for rid, rescon in enumerate(sector):
+                                    resource = rescon[0]
+                                    consumption = rescon[1]
+                                    if resource == input:
+                                        try:
+                                            for aid, a in enumerate(consumption):
+                                                self.Consumption[1][sid][rid][1][aid] += (allocation[rcid] / res.ISC) * cost
+                                        except: 
+                                            self.Consumption[1][sid][rid][1] += (allocation[rcid] / res.ISC) * cost
+
+
 
 
     def CreateResource(self): # yikes
