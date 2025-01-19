@@ -128,7 +128,6 @@ class Player:
         qw = 5
         mvw = 7
         fw = 19
-
         
     def ViewDetailedIndustryOverview(self):
         utils.CLS()
@@ -207,6 +206,36 @@ class Player:
                                 PrivateIndustry[i].append([comodity, PrivateIndustryProduction])
         return PrivateIndustry
 
+    def CalculateIndustryConsumption(self):
+        for s in self.Consumption[1]:
+            for r in s:
+                try:
+                    for a in r[1]:
+                        a = 0.0
+                except:
+                    r[1] = 0.0
+        
+        # Get allocation of each item in the Public Industry
+        for cid, ca in enumerate(self.PublicIndustry[2]):
+            comodity = ca[0]
+            allocation = ca[1]
+            # Get the resource from the resource list to get info
+            for rid, res in enumerate(self.Resources[2]):
+                if comodity == res.name:
+                    # Get the recepies
+                    for rcid, recipie in enumerate(res.Ingredients):
+                        for input, cost in recipie:
+                            for sid, sector in enumerate(self.Consumption[1]):
+                                for rid, rescon in enumerate(sector):
+                                    resource = rescon[0]
+                                    consumption = rescon[1]
+                                    if resource == input:
+                                        try:
+                                            for aid, a in enumerate(consumption):
+                                                self.Consumption[1][sid][rid][1][aid] += (allocation[rcid] / res.ISC) * cost
+                                        except: 
+                                            self.Consumption[1][sid][rid][1] += (allocation[rcid] / res.ISC) * cost
+
     def ManageImportsExports(self):
         pass
 
@@ -242,43 +271,6 @@ class Player:
         while True:
             utils.CLS()
             utils.PrintMenu("Mod. Pop. Con.")
-
-
-    def CalculateIndustryConsumption(self):
-        for s in self.Consumption[1]:
-            for r in s:
-                try:
-                    for a in r[1]:
-                        a = 0.0
-                except:
-                    r[1] = 0.0
-        
-        # Get allocation of each item in the Public Industry
-        for cid, ca in enumerate(self.PublicIndustry[2]):
-            comodity = ca[0]
-            allocation = ca[1]
-            # Get the resource from the resource list to get info
-            for rid, res in enumerate(self.Resources[2]):
-                if comodity == res.name:
-                    # Get the recepies
-                    for rcid, recipie in enumerate(res.Ingredients):
-                        for input, cost in recipie:
-                            for sid, sector in enumerate(self.Consumption[1]):
-                                for rid, rescon in enumerate(sector):
-                                    resource = rescon[0]
-                                    consumption = rescon[1]
-                                    if resource == input:
-                                        try:
-                                            for aid, a in enumerate(consumption):
-                                                self.Consumption[1][sid][rid][1][aid] += (allocation[rcid] / res.ISC) * cost
-                                        except: 
-                                            self.Consumption[1][sid][rid][1] += (allocation[rcid] / res.ISC) * cost
-
-
-
-
-    def CreateResource(self): # yikes
-        pass
 
     def ModifyPolicy(self):
         while True:
