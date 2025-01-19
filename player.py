@@ -106,9 +106,10 @@ class Player:
             except Exception as e:
                 utils.PrintErrorMenu(e)
 
-    def PrintResources(self, type, id=None, pop=True):
+    def PrintResources(self, type, id=None, pop=True): # Redo
         #"| # | Name | Inputs | Con | Req | Gov | P | ISA | ISC | Q | M.V. | Facility |"
         #"  5    25      25      7     7     7    5    5     5    5    7         19    "
+        return
         popmod = self.population
         if not pop:
             popmod = 1.0
@@ -241,7 +242,7 @@ class Player:
             except Exception as e:
                 utils.PrintErrorMenu(e)
         
-    def AllocateIndustry(self):
+    def AllocateIndustry(self): # Redo
         while True:
             self.CalculateIndustryConsumption()
             utils.CLS()
@@ -381,7 +382,7 @@ class Player:
             except Exception as e:
                 utils.PrintErrorMenu(e)
 
-    def ModifyPopulationConsumption(self): # Really gotta fix this
+    def ModifyPopulationConsumption(self):
         while True:
             utils.CLS()
             utils.PrintMenu("Mod. Pop. Con.")
@@ -444,15 +445,15 @@ class Player:
                 while sum(self.Consumption[0][s][n][1]) != val:
                     utils.CLS()
                     utils.PrintMenu("Mod. Pop. Con.")
-                    print(f"\nYou must manually assign the TYPE of resources allocated for {self.Consumption[0][s][n][0].name} consumption.")
+                    print(f"\nYou must manually assign the TYPE of resources allocated for {self.Consumption[0][s][n][0]} consumption.")
                     
                     self.PrintResources("Industry", n)
 
                     print(f"\nYou have {sum(self.Consumption[0][s][n][1])}/{val} assigned.")
 
-                    r = int(input(f"\nWhich recipie would you like to allocate resources from? [1-{len(self.Consumption[0][s][n][0].Ingredients)}]: "))
+                    r = int(input(f"\nWhich recipie would you like to allocate resources from? [1-{len(self.Consumption[0][s][n][1])}]: "))
 
-                    if not 0 < r < len(self.Consumption[0][s][n][0].Ingredients) + 1:
+                    if not 0 < r < len(self.Consumption[0][s][n][1]) + 1:
                         raise Exception("Invalid input")
                     
                     r -= 1
@@ -467,132 +468,21 @@ class Player:
             except Exception as e:
                 utils.PrintErrorMenu(e)
 
-    def CalculateIndustryConsumption(self): # This too
-        for res, isa in self.Industry:
-            for i, recipie in enumerate(res.Ingredients):
-                for r, q in recipie:
-                    for s, sector in enumerate(self.Consumption[1]):
-                        for n, comodity in enumerate(sector):
-                            if comodity[0].name == r:
-                                try:
-                                    while sum(self.Consumption[1][s][n][1]) != q * (isa[i] / res.ISC):
-                                        utils.CLS()
-                                        utils.PrintMenu("Ind. Con. Allocation")
-                                        print(f"An item requires manual assignment of the TYPE of resource.")
-                                        
-                                        print(f"Creating {res.name}(s) requires *{q}, {r.upper()}*")
-                                        print(f"\nSince you can make multiple kinds of pipes, you must choose which ones to use to create the {res.name}(s)")
-                                        
-                                        match s:
-                                            case 0:
-                                                self.PrintResources("Agriculture", n)
-                                            case 1:
-                                                self.PrintResources("Mining", n)
-                                            case 2:
-                                                self.PrintResources("Industry", n)
+    def CalculateIndustryConsumption(self):
+            for cid, comodity in enumerate(self.PrivateIndustry[2]):
+                for res in self.Resources[2]:
+                    if comodity[0] == res.name:
+                        if sum(comodity[1]) == 0:
+                            continue
+                        for i, recipie in enumerate(res.Ingredients):
+                            if i == 0:
+                                self.Consumption[1][2][cid][1][i] = (comodity[1] / res.ISC) * res.Quantity
+                            else:
+                                self.Consumption[1][2][cid][1][i] = (comodity[1][i] / res.ISC) * res.Quantity
 
-                                        print(f"\nYou have {sum(self.Consumption[1][s][n][1])} {r.upper()} assigned.")
-                                        print(f"\nYou need {q * (isa[i] / res.ISC)} {r.upper()} assigned.")
-
-                                        print()
-
-                                        try:
-                                            recipie = int(input(f"\nWhich recipie would you like to allocate resources from? [1-{len(res.Ingredients)}]:"))
-
-                                            if not 0 < recipie < len(res.Ingredients) + 1:
-                                                raise Exception("Invalid input")
-                                            
-                                            recipie -= 1
-
-                                            amt = float(input(f"\nHow much would you like to allocate?"))
-
-                                            if amt < 0:
-                                                raise Exception("Invalid input")
-                                            
-                                            self.Consumption[1][s][n][1][recipie] = amt
-                                        except Exception as e:
-                                            utils.PrintErrorMenu(e)
-                                except:
-                                    self.Consumption[1][s][n][1] = q * (isa[i] / res.ISC)
 
     def CreateResource(self): # yikes
-        while True:
-                utils.CLS()
-                utils.PrintMenu("Add Resource")
-                print("What type of resource would you like to add?")
-                print("1. Agriculture")
-                print("2. Mining")
-                print("3. Industry")
-                print("[E/e] Exit")
-
-                c = input("\nEnter a number [1-3]: ")
-
-                if c.lower() == "e":
-                    break
-
-                try:
-                    c = int(c)
-
-                    if not c in {1, 2, 3}:
-                        raise Exception("Invalid input")
-                    
-                    n = input("\nEnter the name of the resource: ")
-                    isc = int(input("\nEnter the Industry Score Cost: "))
-                    q = int(input("\nEnter the Quantity produced: "))
-                    cost = float(input("\nEnter the cost: "))
-
-                    match c: # Append to resource list, imports, exports, and save to resources.json
-                        case 1: # Agriculture
-                            facility = f"{n} Farm"
-                            com = comodity.Comodity(n, isc, q, cost, facility)
-                            self.Agriculture.append([com, 0])
-                            break
-                        case 2: # Mining
-                            facility = f"{n} Mine"
-                            com = comodity.Comodity(n, isc, q, cost, facility)
-                            self.Mining.append([com, 0])
-                            break
-                        case 3: # Industry
-                            facility = input("\nEnter the facility the item is produced in: ")
-                            recipies = []
-
-                            while True:
-                                print("\nWould you like to add a recipie? [Y/n]")
-                                i = input("\nEnter a letter: ")
-
-                                if i.lower() == "n":
-                                    break
-                                
-                                recipie = []
-                                while True:
-                                    print("\nWould you like to add an input? [Y/n]")
-                                    i = input("\nEnter a letter: ")
-
-                                    if i.lower() == "n":
-                                        recipies.append(recipie)
-                                        break
-                                    
-                                    name = input("\nEnter the name of the input: ")
-                                    quantity = int(input("\nEnter the quantity of the input: "))
-
-                                    recipie.append([name, quantity])
-                            
-                            com = comodity.Comodity(n, isc, q, cost, facility, recipies)
-                            com = self.Industry.append([com, [0]])
-                    self.Imports[c - 1].append([com, 0])
-                    self.Exports[c - 1].append([com, 0])
-                    
-                    with open('resources.json', 'r') as file:
-                        resources = json.load(file)
-
-                    resources.append({"name": n, "ISC": isc, "Quantity": q, "Cost": cost, "type": ["Agriculture", "Mining", "Industry"][c - 1], "Facility": facility, "Input": recipies})
-
-                    with open('resources.json', 'w') as file:
-                        json.dump(resources, file)
-
-                except Exception as e:
-                    utils.PrintErrorMenu(e)
-                return
+        pass
 
     def ModifyPolicy(self):
         while True:
