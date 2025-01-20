@@ -58,17 +58,14 @@ def CreatePlayerData():
     mins = float(input("Enter your Mining Score: "))
     inds = float(input("Enter your Industrial Score: "))
 
-    # Industry
-    Industry = []
-    Agriculture = []
-    Mining = []
+    IndustrialScores = [agrs, mins, inds]
+
+    Resources = [[],[],[]]
+
+    PublicIndustry = [[],[],[]]
 
     # Import/Export
-    ImpExpCon = []
-
-    AgricultureImpExp = []
-    MiningImpExp = []
-    IndustryImpExp = []
+    ImpExp = [[],[],[]]
 
     # Consumption
     Consumption = [[[],[],[]],[[],[],[]],[[],[],[]]]
@@ -81,31 +78,30 @@ def CreatePlayerData():
 
         if resource['type'] == 'Agriculture':
             res = comodity.Comodity(resource['name'], resource['ISC'], resource['Quantity'], resource['Cost'], f"{resource['name']} Farm")
-            AgricultureImpExp.append([res, 0.0])
-            Agriculture.append([res, 0.0])
+            Resources[0].append(res)
+            ImpExp[0].append([res.name, [0.0, 0.0]])
+            PublicIndustry[0].append([res.name, 0.0])
             for i in range(3):
-                Consumption[i][0].append([res, 0.0])
+                Consumption[i][0].append([res.name, 0.0])
         elif resource['type'] == 'Mining':
             res = comodity.Comodity(resource['name'], resource['ISC'], resource['Quantity'], resource['Cost'], f"{resource['name']} Mine")
-            MiningImpExp.append([res, 0.0])
-            Mining.append([res, 0.0])
+            Resources[1].append(res)
+            ImpExp[1].append([res.name, [0.0, 0.0]])
+            PublicIndustry[1].append([res.name, 0.0])
             for i in range(3):
-                Consumption[i][1].append([res, 0.0])
+                Consumption[i][1].append([res.name, 0.0])
         elif resource['type'] == 'Industry':
             res = comodity.Comodity(resource['name'], resource['ISC'], resource['Quantity'], resource['Cost'], resource['Facility'], resource['Input'])
-            IndustryImpExp.append([res, 0.0])
+            Resources[2].append(res)
             isa = []
             for i in resource['Input']:
-                isa.append(0)
-            Industry.append([res, isa])
+                isa.append(0.0)
+            ImpExp[2].append([res.name, isa * 2])
+            PublicIndustry[2].append([res.name, isa])
             for i in range(3):
-                Consumption[i][2].append([res, isa])
-
-    ImpExpCon.append(AgricultureImpExp)
-    ImpExpCon.append(MiningImpExp)
-    ImpExpCon.append(IndustryImpExp)
+                Consumption[i][2].append([res.name, isa])
     
-    return info, policy, inds, agrs, mins, Industry, Agriculture, Mining, ImpExpCon, ImpExpCon, Consumption
+    return info, policy, IndustrialScores, Resources, PublicIndustry, ImpExp, Consumption
 
 def LoadPlayerData(): 
     with open('player.json', 'r') as file:
@@ -113,83 +109,23 @@ def LoadPlayerData():
         if len(data) == 0:
             raise Exception
         
-        Industry = []
-        Agriculture = []
-        Mining = []
-
-        IndustryImports = []
-        AgricultureImports = []
-        MiningImports = []
-
-        IndustryExports = []
-        AgricultureExports = []
-        MiningExports = []
-
-        Imports = []
-        Exports = []
-
-        Consumption = [[[],[],[]],[[],[],[]],[[],[],[]]]
+        Resources = [[],[],[]]
 
         with open('resources.json', 'r') as file:
             resources = json.load(file)
 
         for resource in resources:
             print(f"{resource}")
-            imp = next((com[1] for com in data['Imports'] if com[0] == resource['name']), 0)
-            exp = next((com[1] for com in data['Exports'] if com[0] == resource['name']), 0)
 
+            match resource['type']:
+                case 'Agriculture':
+                    res = comodity.Comodity(resource['name'], resource['ISC'], resource['Quantity'], resource['Cost'], f"{resource['name']} Farm")
+                    Resources[0].append(res)
+                case 'Mining':
+                    res = comodity.Comodity(resource['name'], resource['ISC'], resource['Quantity'], resource['Cost'], f"{resource['name']} Mine")
+                    Resources[1].append(res)
+                case 'Industry':
+                    res = comodity.Comodity(resource['name'], resource['ISC'], resource['Quantity'], resource['Cost'], resource['Facility'], resource['Input'])
+                    Resources[2].append(res)
 
-            if resource['type'] == 'Agriculture':
-                ind = next((com[1] for com in data['Agriculture'] if com[0] == resource['name']), 0)
-                res = comodity.Comodity(resource['name'], resource['ISC'], resource['Quantity'], resource['Cost'], f"{resource['name']} Farm")
-                Agriculture.append([res, ind])
-                AgricultureImports.append([res, imp])
-                AgricultureExports.append([res, exp])
-
-                PopCon = next((com[1] for com in data['Consumption'][0][0] if com[0] == resource['name']), 0)
-                IndCon = next((com[1] for com in data['Consumption'][1][0] if com[0] == resource['name']), 0)
-                ActCon = next((com[1] for com in data['Consumption'][2][0] if com[0] == resource['name']), 0)
-
-                Consumption[0][0].append([res, PopCon])
-                Consumption[1][0].append([res, IndCon])
-                Consumption[2][0].append([res, ActCon])
-            elif resource['type'] == 'Mining':
-                ind = next((com[1] for com in data['Mining'] if com[0] == resource['name']), 0)
-                res = comodity.Comodity(resource['name'], resource['ISC'], resource['Quantity'], resource['Cost'], f"{resource['name']} Mine")
-                Mining.append([res, ind])
-                MiningImports.append([res, imp])
-                MiningExports.append([res, exp])
-
-                PopCon = next((com[1] for com in data['Consumption'][0][1] if com[0] == resource['name']), 0)
-                IndCon = next((com[1] for com in data['Consumption'][1][1] if com[0] == resource['name']), 0)
-                ActCon = next((com[1] for com in data['Consumption'][2][1] if com[0] == resource['name']), 0)
-
-                Consumption[0][1].append([res, PopCon])
-                Consumption[1][1].append([res, IndCon])
-                Consumption[2][1].append([res, ActCon])
-            elif resource['type'] == 'Industry':
-                res = comodity.Comodity(resource['name'], resource['ISC'], resource['Quantity'], resource['Cost'], resource['Facility'], resource['Input'])
-                isa = []
-                for i, r in enumerate(resource['Input']):
-                    isa.append(next((com[1][i] for com in data['Industry'] if com[0] == resource['name']), 0))
-                Industry.append([res, isa])
-                IndustryImports.append([res, imp])
-                IndustryExports.append([res, exp])
-
-                PopCon = next((com[1] for com in data['Consumption'][0][2] if com[0] == resource['name']), 0)
-                IndCon = next((com[1] for com in data['Consumption'][1][2] if com[0] == resource['name']), 0)
-                ActCon = next((com[1] for com in data['Consumption'][2][2] if com[0] == resource['name']), 0)
-
-                Consumption[0][2].append([res, PopCon])
-                Consumption[1][2].append([res, IndCon])
-                Consumption[2][2].append([res, ActCon])
-
-        Imports.append(AgricultureImports)
-        Imports.append(MiningImports)
-        Imports.append(IndustryImports)
-
-        Exports.append(AgricultureExports)
-        Exports.append(MiningExports)
-        Exports.append(IndustryExports)
-
-        return data['info'], data['policy'], data['IS'], data['AS'], data['MS'], Industry, Agriculture, Mining, Imports, Exports, Consumption
+        return data['info'], data['policy'], data['IndustrialScores'], Resources, data['PublicIndustry'], data['ImportExport'], data['Consumption']
