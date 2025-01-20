@@ -57,10 +57,13 @@ def CreatePlayerData():
     
     info['name'] = name
 
-    # Policy | TODO: Allow user to define policy from character creation?
-    policy = {}
+    pop = float(input("Enter your population (In MILLIONS): "))
 
-    policy["PublicIndustry"] = 10.0
+    info['population'] = pop
+
+    # Policy | TODO: Allow user to define policy from character creation?
+    info['policy'] = {}
+    info['policy']['PublicIndustryShare'] = 10.0
 
     # Industry Scores
     agrs = float(input("Enter your Agricultural Score: "))
@@ -110,7 +113,7 @@ def CreatePlayerData():
             for i in range(3):
                 Consumption[i][2].append([res.name, isa])
     
-    return info, policy, IndustrialScores, Resources, PublicIndustry, ImpExp, Consumption
+    return info, IndustrialScores, Resources, PublicIndustry, ImpExp, Consumption
 
 def LoadPlayerData(): 
     with open('player.json', 'r') as file:
@@ -137,4 +140,4 @@ def LoadPlayerData():
                     res = comodity.Comodity(resource['name'], resource['ISC'], resource['Quantity'], resource['Cost'], resource['Facility'], resource['Input'])
                     Resources[2].append(res)
 
-        return data['info'], data['policy'], data['IndustrialScores'], Resources, data['PublicIndustry'], data['ImportExport'], data['Consumption']
+        return data['info'], data['IndustrialScores'], Resources, data['PublicIndustry'], data['ImportExport'], data['Consumption']
