@@ -485,7 +485,6 @@ class Player:
                                 imp = float(input(f"\nEnter the amount of imports of recipie #{recid} for {self.Resources[s][rid].name}: "))
                                 self.ImportExport[s][rid][1][0][recid] = exp
                                 self.ImportExport[s][rid][1][1][recid] = imp
-                
             except Exception as e:
                 utils.PrintErrorMenu(e)
 
