@@ -294,7 +294,7 @@ class Player:
 
                 print("[E/e] Exit")
 
-                rid = input(f"\nEnter the number of the resource you would like to allocate Industrial Score to [1-{len(self.PublicIndustry[s])}]: ")
+                rid = input(f"\nEnter the number of the resource you would like to allocate Industrial Score to [1-{len(self.PublicIndustry[s]) - 1}]: ")
 
                 if rid.lower() == "e":
                     break
@@ -428,10 +428,72 @@ class Player:
             except Exception as e:
                 utils.PrintErrorMenu(e)
 
-    def ModifyPopulationConsumption(self): # Redo
+    def ModifyPopulationConsumption(self):
         while True:
             utils.CLS()
             utils.PrintMenu("Mod. Pop. Con.")
+            for i in range(3):
+                self.PrintResources(i, perpop=True)
+
+            print("Which industry would you like to modify the Population Resource Consumption of?")
+            options = [
+                "Agriculture",
+                "Mining",
+                "Industry"
+            ]
+            for num, opt in enumerate(options):
+                print(f"{num}. {opt}")
+
+            print("[E/e] Exit")
+
+            s = input(f"\nEnter a number [0-{len(options)}]: ")
+
+            if s.lower() == "e":
+                break
+
+            try:
+                s = int(s)
+
+                if s not in {0, 1, 2}:
+                    raise Exception("Invalid input")
+                
+                utils.CLS()
+                utils.PrintMenu(f"Mod. Pop. {options[s]} Con.")
+                self.PrintResources(s)
+
+                print("[E/e] Exit")
+
+                rid = input(f"\nEnter the id of the resource you would like to modify the Population Consumption of [0-{len(self.Consumption[0][s]) - 1}]: ")
+
+                if rid.lower() == "e":
+                    break
+
+                rid = int(rid)
+
+                if rid not in range(0, len(self.Consumption[0][s]) + 1):
+                    raise Exception("Invalid input")
+                
+                utils.CLS()
+                utils.PrintMenu(f"Mod. Pop. {self.Consumption[0][s][rid][0]} Con.")
+                self.PrintResources(s, rid)
+
+                print("\n[E/e] Exit")
+
+                if s == 2:
+                    for recid, recipie in enumerate(self.Resources[s][rid].Ingredients):
+                        for resid, resource in enumerate(recipie):
+                            con = float(input(f"\nEnter the Per-Million-Pop Consumption rate of recipie #{recid} for {self.Resources[s][rid].name}: "))
+                            if con < 0:
+                                raise Exception("Invalid input")
+                            self.Consumption[0][s][rid][1][recid] = con
+                else:
+                    con = float(input(f"\nEnter the Per-Million-Pop Consumption rate of {self.Resources[s][rid].name}: "))
+                    if con < 0:
+                        raise Exception("Invalid input")
+                    self.Consumption[0][s][rid][1] = con
+                return
+            except Exception as e:
+                utils.PrintErrorMenu(e)
 
     def ModifyPolicy(self):
         while True:
