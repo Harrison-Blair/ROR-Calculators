@@ -108,7 +108,7 @@ def CreatePlayerData():
             isa = []
             for i in resource['Input']:
                 isa.append(0.0)
-            ImpExp[2].append([res.name, isa * 2])
+            ImpExp[2].append([res.name, [isa] * 2])
             PublicIndustry[2].append([res.name, isa])
             for i in range(3):
                 Consumption[i][2].append([res.name, isa])

@@ -121,10 +121,10 @@ class Player:
         if not perpop:
             popmod = self.info["population"]
 
-        #"| # | NAME | INPUTS | CON | REQ | GOV | PROD | ISA | ISC | Q | M.V. | FACILILITY |"
-        #"  5    25      25      7     7     7      7    7     7    5    7         20    "
-        columns = ["#", "NAME", "INPUTS", "CON", "REQ", "GOV", "PROD", "ISA", "ISC", "Q", "M.V.", "FACILITY"]
-        widths = [5, 25, 25, 7, 7, 7, 7, 7, 7, 5, 7, 20]
+        #"| # | NAME | INPUTS | CON | REQ | GOV | EXP | IMP | PROD | ISA | ISC | Q | M.V. | FACILILITY |"
+        #"  5    25      25      7     7     7     7     7      7     7     7    5    7         20    "
+        columns = ["#", "NAME", "INPUTS", "CON", "REQ", "GOV", "EXP", "IMP", "PROD", "ISA", "ISC", "Q", "M.V.", "FACILITY"]
+        widths = [5, 25, 25, 7, 7, 7, 7, 7, 7, 7, 7, 5, 7, 20]
         industries = [type] if type is not None else range(3)
         for i in industries: # Headers
             match i:
@@ -163,7 +163,9 @@ class Player:
                             print(f" ".center(widths[8]) + "|", end="")
                             print(f" ".center(widths[9]) + "|", end="")
                             print(f" ".center(widths[10]) + "|", end="")
-                            print(f" ".center(widths[11]), end="")
+                            print(f" ".center(widths[11]) + "|", end="")
+                            print(f" ".center(widths[12]) + "|", end="")
+                            print(f" ".center(widths[13]), end="")
                         for resid, resource in enumerate(recipie):
                             if resid == 0:
                                 print(f"\n|{str(rid).center(widths[0])}|", end="")
@@ -172,18 +174,20 @@ class Player:
                                 print(f"{str(self.Consumption[0][i][rid][1][recid] * popmod).center(widths[3])}|", end="")
                                 print(f"{str(self.Consumption[1][i][rid][1][recid]).center(widths[4])}|", end="")
                                 print(f"{str(self.Consumption[2][i][rid][1][recid]).center(widths[5])}|", end="")
-                                print(f"{str((self.PublicIndustry[i][rid][1][recid] / res.ISC) * res.Quantity).center(widths[6])}|", end="")
-                                print(f"{str(self.PublicIndustry[i][rid][1][recid]).center(widths[7])}|", end="")
+                                print(f"{str(self.ImportExport[i][rid][1][1][recid]).center(widths[6])}|", end="")
+                                print(f"{str(self.ImportExport[i][rid][1][0][recid]).center(widths[7])}|", end="")
+                                print(f"{str((self.PublicIndustry[i][rid][1][recid] / res.ISC) * res.Quantity).center(widths[8])}|", end="")
+                                print(f"{str(self.PublicIndustry[i][rid][1][recid]).center(widths[9])}|", end="")
                                 if recid == 0:
-                                    print(f"{str(res.ISC).center(widths[8])}|", end="")
-                                    print(f"{str(res.Quantity).center(widths[9])}|", end="")
-                                    print(f"{str(res.Cost).center(widths[10])}|", end="")
-                                    print(f"{res.Facility.center(widths[11])}", end="")
+                                    print(f"{str(res.ISC).center(widths[10])}|", end="")
+                                    print(f"{str(res.Quantity).center(widths[11])}|", end="")
+                                    print(f"{str(res.Cost).center(widths[12])}|", end="")
+                                    print(f"{res.Facility.center(widths[13])}", end="")
                                 else:
-                                    print(f" ".center(widths[8]) + "|", end="")
-                                    print(f" ".center(widths[9]) + "|", end="")
                                     print(f" ".center(widths[10]) + "|", end="")
-                                    print(f" ".center(widths[11]), end="")
+                                    print(f" ".center(widths[11]) + "|", end="")
+                                    print(f" ".center(widths[12]) + "|", end="")
+                                    print(f" ".center(widths[13]), end="")
                             else:
                                 print(f"\n|{str(rid).center(widths[0])}|", end="")
                                 print(f"".center(widths[1]) + "|", end="")
@@ -196,7 +200,9 @@ class Player:
                                 print(f" ".center(widths[8]) + "|", end="")
                                 print(f" ".center(widths[9]) + "|", end="")
                                 print(f" ".center(widths[10]) + "|", end="")
-                                print(f" ".center(widths[11]), end="")
+                                print(f" ".center(widths[11]) + "|", end="")
+                                print(f" ".center(widths[12]) + "|", end="")
+                                print(f" ".center(widths[13]), end="")
                 except: # No recipies
                     print(f"\n|{str(rid).center(widths[0])}|", end="")
                     print(f"{res.name.center(widths[1])}|", end="")
@@ -204,12 +210,14 @@ class Player:
                     print(f"{str(self.Consumption[0][i][rid][1] * popmod).center(widths[3])}|", end="")
                     print(f"{str(self.Consumption[1][i][rid][1]).center(widths[4])}|", end="")
                     print(f"{str(self.Consumption[2][i][rid][1]).center(widths[5])}|", end="")
-                    print(f"{str((self.PublicIndustry[i][rid][1] / res.ISC) * res.Quantity).center(widths[6])}|", end="")
-                    print(f"{str(self.PublicIndustry[i][rid][1]).center(widths[7])}|", end="")
-                    print(f"{str(res.ISC).center(widths[8])}|", end="")
-                    print(f"{str(res.Quantity).center(widths[9])}|", end="")
-                    print(f"{str(res.Cost).center(widths[10])}|", end="")
-                    print(f"{res.Facility.center(widths[11])}", end="")
+                    print(f"{str(self.ImportExport[i][rid][1][1]).center(widths[6])}|", end="")
+                    print(f"{str(self.ImportExport[i][rid][1][0]).center(widths[7])}|", end="")
+                    print(f"{str((self.PublicIndustry[i][rid][1] / res.ISC) * res.Quantity).center(widths[8])}|", end="")
+                    print(f"{str(self.PublicIndustry[i][rid][1]).center(widths[9])}|", end="")
+                    print(f"{str(res.ISC).center(widths[10])}|", end="")
+                    print(f"{str(res.Quantity).center(widths[11])}|", end="")
+                    print(f"{str(res.Cost).center(widths[12])}|", end="")
+                    print(f"{res.Facility.center(widths[13])}", end="")
                 print("\n+", end="")
                 for col in columns: # Header Divider
                     print("-" * widths[columns.index(col)] + "+", end="")
