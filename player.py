@@ -105,26 +105,106 @@ class Player:
                         raise Exception("Invalid input")
 
             except Exception as e:
-                utils.PrintErrorMenu(e)
+                utils.PrintErrorMenu(e) 
 
-    def PrintResources(self, type=None, id=None, perpop=False): # Redo
-        #"| # | Name | Inputs | Con | Req | Gov | P | ISA | ISC | Q | M.V. | Facility |"
-        #"  5    25      25      7     7     7    5    5     5    5    7         19    "
+    def PrintResources(self, type=None, id=None, perpop=False):
+        #"| # | NAME | INPUTS | CON | REQ | GOV | PROD | ISA | ISC | Q | M.V. | FACILILITY |"
+        #"  5    25      25      7     7     7      7    7     7    5    7         20    "
+        columns = ["#", "NAME", "INPUTS", "CON", "REQ", "GOV", "PROD", "ISA", "ISC", "Q", "M.V.", "FACILITY"]
+        widths = [5, 25, 25, 7, 7, 7, 7, 7, 7, 5, 7, 20]
+        industries = [type] if type is not None else range(3)
+        for i in industries: # Headers
+            match i:
+                case 0:
+                    print("Agriculture".center(sum(widths) + len(widths) - 1))
+                case 1:
+                    print("Mining".center(sum(widths) + len(widths) - 1))
+                case 2:
+                    print("Industry".center(sum(widths) + len(widths) - 1))
+            print("+" + "-" * (sum(widths) + len(widths) - 1) + "+")
+            
+            print("|", end="") # Table Header
+            for col in columns: 
+                print(col.center(widths[columns.index(col)]) + "|", end="")
+            
+            print("\n+", end="")
+            for col in columns: # Header Divider
+                print("-" * widths[columns.index(col)] + "+", end="")
 
-        idw = 5
-        namew = 23
-        inputw = 23
-        impw = 5 # Not used yet
-        expw = 5 # Not used yet
-        conw = 7
-        reqw = 7 # Not used yet
-        govw = 7 # Not used yet
-        pw = 7
-        isaw = 5
-        iscw = 5
-        qw = 5
-        mvw = 7
-        fw = 19
+            for rid, res in enumerate(self.Resources[i]):
+                res : comodity.Comodity = res
+                if id is not None and rid != id:
+                    continue
+
+                try: # Attempt to get recipies
+                    for recid, recipie in enumerate(res.Ingredients):
+                        if recid != 0:
+                            print(f"\n|"+ " ".center(widths[0]) + "|", end="")
+                            print(f" ".center(widths[1]) + "|", end="")
+                            print(f"OR".center(widths[2]) + "|", end="")
+                            print(f" ".center(widths[3]) + "|", end="")
+                            print(f" ".center(widths[4]) + "|", end="")
+                            print(f" ".center(widths[5]) + "|", end="")
+                            print(f" ".center(widths[6]) + "|", end="")
+                            print(f" ".center(widths[7]) + "|", end="")
+                            print(f" ".center(widths[8]) + "|", end="")
+                            print(f" ".center(widths[9]) + "|", end="")
+                            print(f" ".center(widths[10]) + "|", end="")
+                            print(f" ".center(widths[11]), end="")
+                        for resid, resource in enumerate(recipie):
+                            if resid == 0:
+                                print(f"\n|{str(rid).center(widths[0])}|", end="")
+                                print(f"{res.name.center(widths[1])}|", end="")
+                                print(f"{str(resource[1]).center(5)},{resource[0].center(widths[2] - 6)}|", end="")
+                                print(f"{str(self.Consumption[0][i][rid][1][recid]).center(widths[3])}|", end="")
+                                print(f"{str(self.Consumption[1][i][rid][1][recid]).center(widths[4])}|", end="")
+                                print(f"{str(self.Consumption[2][i][rid][1][recid]).center(widths[5])}|", end="")
+                                print(f"{str((self.PublicIndustry[i][rid][1][recid] / res.ISC) * res.Quantity).center(widths[6])}|", end="")
+                                print(f"{str(self.PublicIndustry[i][rid][1][recid]).center(widths[7])}|", end="")
+                                if recid == 0:
+                                    print(f"{str(res.ISC).center(widths[8])}|", end="")
+                                    print(f"{str(res.Quantity).center(widths[9])}|", end="")
+                                    print(f"{str(res.Cost).center(widths[10])}|", end="")
+                                    print(f"{res.Facility.center(widths[11])}", end="")
+                                else:
+                                    print(f" ".center(widths[8]) + "|", end="")
+                                    print(f" ".center(widths[9]) + "|", end="")
+                                    print(f" ".center(widths[10]) + "|", end="")
+                                    print(f" ".center(widths[11]), end="")
+                            else:
+                                print(f"\n|{str(rid).center(widths[0])}|", end="")
+                                print(f"".center(widths[1]) + "|", end="")
+                                print(f"{str(resource[1]).center(5)},{resource[0].center(widths[2] - 6)}|", end="")
+                                print(f" ".center(widths[3]) + "|", end="")
+                                print(f" ".center(widths[4]) + "|", end="")
+                                print(f" ".center(widths[5]) + "|", end="")
+                                print(f" ".center(widths[6]) + "|", end="")
+                                print(f" ".center(widths[7]) + "|", end="")
+                                print(f" ".center(widths[8]) + "|", end="")
+                                print(f" ".center(widths[9]) + "|", end="")
+                                print(f" ".center(widths[10]) + "|", end="")
+                                print(f" ".center(widths[11]), end="")
+                except: # No recipies
+                    print(f"\n|{str(rid).center(widths[0])}|", end="")
+                    print(f"{res.name.center(widths[1])}|", end="")
+                    print(f"{"-".center(widths[2])}|", end="")
+                    print(f"{str(self.Consumption[0][i][rid][1]).center(widths[3])}|", end="")
+                    print(f"{str(self.Consumption[1][i][rid][1]).center(widths[4])}|", end="")
+                    print(f"{str(self.Consumption[2][i][rid][1]).center(widths[5])}|", end="")
+                    print(f"{str((self.PublicIndustry[i][rid][1] / res.ISC) * res.Quantity).center(widths[6])}|", end="")
+                    print(f"{str(self.PublicIndustry[i][rid][1]).center(widths[7])}|", end="")
+                    print(f"{str(res.ISC).center(widths[8])}|", end="")
+                    print(f"{str(res.Quantity).center(widths[9])}|", end="")
+                    print(f"{str(res.Cost).center(widths[10])}|", end="")
+                    print(f"{res.Facility.center(widths[11])}", end="")
+                print("\n+", end="")
+                for col in columns: # Header Divider
+                    print("-" * widths[columns.index(col)] + "+", end="")
+            print()
+                    
+
+            
+            
         
     def ViewDetailedIndustryOverview(self):
         utils.CLS()
