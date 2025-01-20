@@ -201,11 +201,7 @@ class Player:
                 for col in columns: # Header Divider
                     print("-" * widths[columns.index(col)] + "+", end="")
             print()
-                    
-
-            
-            
-        
+                        
     def ViewDetailedIndustryOverview(self):
         utils.CLS()
         utils.PrintMenu("Det. Ind. Overview")
