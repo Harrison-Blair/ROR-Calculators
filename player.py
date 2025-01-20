@@ -107,12 +107,9 @@ class Player:
             except Exception as e:
                 utils.PrintErrorMenu(e)
 
-    def PrintResources(self, type, id=None, pop=True): # Redo
+    def PrintResources(self, type=None, id=None, perpop=False): # Redo
         #"| # | Name | Inputs | Con | Req | Gov | P | ISA | ISC | Q | M.V. | Facility |"
         #"  5    25      25      7     7     7    5    5     5    5    7         19    "
-        popmod = self.population
-        if not pop:
-            popmod = 1.0
 
         idw = 5
         namew = 23
@@ -186,6 +183,90 @@ class Player:
         while True:
             utils.CLS()
             utils.PrintMenu("Allocate Industry")
+
+            self.PrintResources()
+
+            print("Which industry would you like to allocate resources to?")
+            options = [
+                "Agriculture",
+                "Mining",
+                "Industry"
+            ]
+            for num, opt in enumerate(options):
+                print(f"{num}. {opt}")
+
+            print("[E/e] Exit")
+
+            s = input(f"\nEnter a number [0-{len(options)}]: ")
+
+            if s.lower() == "e":
+                break
+
+            try:
+                s = int(s)
+
+                if s not in {0, 1, 2}:
+                    raise Exception("Invalid input")
+                
+                utils.CLS()
+                utils.PrintMenu(f"Alloc. {options[s]} Ind.")
+                self.PrintResources(s)
+
+                print("[E/e] Exit")
+
+                rid = input(f"\nEnter the number of the resource you would like to allocate Industrial Score to [1-{len(self.PublicIndustry[s])}]: ")
+
+                if rid.lower() == "e":
+                    break
+
+                rid = int(rid)
+
+                if rid not in range(0, len(self.PublicIndustry[s]) + 1):
+                    raise Exception("Invalid input")
+                
+                utils.CLS()
+                utils.PrintMenu(f"Alloc. {self.PublicIndustry[s][rid][0]} Ind.")
+                self.PrintResources(s, rid)
+
+                print("\n[E/e] Exit")
+
+                if s == 2:
+                    while True:
+                        # Only one recipie case
+                        if len(self.PublicIndustry[s][rid][1]) == 1:
+                            indscore = float(input(f"\nEnter the amount of Industrial Score you would like to allocate to {self.PublicIndustry[s][rid][0]}: "))
+                            self.PublicIndustry[s][rid][1][0] = indscore
+                            return
+
+                        r = input(f"\nWhich recipie of {self.PublicIndustry[s][rid][0]} would you like to allocate Industrial Score to? [0-{len(self.PublicIndustry[s][rid][1]) - 1}]: ")
+                        
+                        if r == "e":
+                            break
+
+                        try:
+                            r = int(r)
+                            
+                            if r not in range(0, len(self.PublicIndustry[s][rid][1])):
+                                raise Exception("Invalid input")    
+                            
+                            indscore = float(input(f"\nEnter the amount of Industrial Score you would like to allocate to recipie #{r} of {self.PublicIndustry[s][rid][0]}: "))
+                            self.PublicIndustry[s][rid][1][r] = indscore
+                            return
+                        except Exception as e:
+                            utils.PrintErrorMenu(e)
+                            utils.CLS()
+                            utils.PrintMenu(f"Alloc. {self.PublicIndustry[s][rid][0]} Ind.")
+                            self.PrintResources(s, rid)
+                            print("\n[E/e] Exit")
+                else:
+                    indscore = float(input(f"\nEnter the amount of Industrial Score you would like to allocate to {self.PublicIndustry[s][rid][0]}: "))
+
+                if indscore < 0:
+                    raise Exception("Invalid input")
+                
+                self.PublicIndustry[s][rid][1] = indscore
+            except Exception as e:
+                utils.PrintErrorMenu(e)
 
     def CalculatePrivateIndustry(self):
         PrivateIndustry = [[],[],[]]
