@@ -16,13 +16,20 @@ def CLS():
     # Fallback for other operating systems.
         print('\n' * 100)
 
-def PrintMenu(name="MENU NAME", length=140):
+def PrintMenu(name="MENU NAME", length=150):
     """ Prints a given menu name at a given length with bars surrounding """
-    print()
-    print("=" * length)
-    n = name.center(18)
-    print(f"|{n}|" * 7)
-    print("=" * length)
+    print("=" * (length + 1))
+    if len(name) < 25:
+        for i in range(int(length / 25)):
+            print(f"/" + name.center(24), end="")
+    elif len(name) < 30:
+        for i in range(int(length / 30)):
+            print(f"/" + name.center(29), end="")
+    else:
+        for i in range(int(length / 50)):
+            print(f"/" + name.center(49), end="")
+    print("/")
+    print("=" * (length + 1))
 
 def PrintErrorMenu(error=None):
     """ Prints an error message, and then returns """
