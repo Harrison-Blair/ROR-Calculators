@@ -6,7 +6,6 @@ class Player:
     def __init__(self, info, policy, IndustrialScores, Resources, PublicIndustry, ImportExport, Consumption):
         # Country Info
         self.info = info
-        self.population = 105.0 # in millions
         self.policy = policy
 
         # Resource lists
@@ -54,12 +53,18 @@ class Player:
         with open('player.json', 'w') as file:
             json.dump(PlayerData, file)
 
+    def PrintInfo(self):
+        for key, value in self.info.items():
+            if key == "population":
+                print(f"{key.upper()}: {value} Million")
+                continue
+            print(f"{key.upper()}: {value}")
+
     def main(self):
         while True:
             utils.CLS()
             utils.PrintMenu("Main Menu")
-            print(f"Name: {self.info['name']}")
-            # Swag overview
+            self.PrintInfo()
 
             print("Menu")
             print("-" * 45)
@@ -110,7 +115,7 @@ class Player:
     def PrintResources(self, type=None, id=None, perpop=False):
         popmod = 1.0
         if not perpop:
-            popmod = self.population
+            popmod = self.info("population")
 
         #"| # | NAME | INPUTS | CON | REQ | GOV | PROD | ISA | ISC | Q | M.V. | FACILILITY |"
         #"  5    25      25      7     7     7      7    7     7    5    7         20    "
