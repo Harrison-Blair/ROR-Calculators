@@ -25,9 +25,11 @@ def PrintMenu(name="MENU NAME", length=150):
     elif len(name) < 30:
         for i in range(int(length / 30)):
             print(f"/" + name.center(29), end="")
-    else:
+    elif len(name) < 50:
         for i in range(int(length / 50)):
             print(f"/" + name.center(49), end="")
+    else:
+        print(f"/" + name.center(length - 1), end="")
     print("/")
     print("=" * (length + 1))
 
