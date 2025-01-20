@@ -179,7 +179,7 @@ class Player:
             except Exception as e:
                 utils.PrintErrorMenu(e)
         
-    def AllocateIndustry(self): # Redo
+    def AllocateIndustry(self):
         while True:
             utils.CLS()
             utils.PrintMenu("Allocate Industry")
