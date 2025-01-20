@@ -422,7 +422,7 @@ class Player:
                                         except: 
                                             self.Consumption[1][sid][rid][1] += (allocation[rcid] / res.ISC) * cost
 
-    def ManageImportsExports(self): # TODO
+    def ManageImportsExports(self):
         while True:
             utils.CLS()
             utils.PrintMenu("Manage Imports/Exports")
