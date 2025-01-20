@@ -108,6 +108,10 @@ class Player:
                 utils.PrintErrorMenu(e) 
 
     def PrintResources(self, type=None, id=None, perpop=False):
+        popmod = 1.0
+        if not perpop:
+            popmod = self.population
+
         #"| # | NAME | INPUTS | CON | REQ | GOV | PROD | ISA | ISC | Q | M.V. | FACILILITY |"
         #"  5    25      25      7     7     7      7    7     7    5    7         20    "
         columns = ["#", "NAME", "INPUTS", "CON", "REQ", "GOV", "PROD", "ISA", "ISC", "Q", "M.V.", "FACILITY"]
@@ -156,7 +160,7 @@ class Player:
                                 print(f"\n|{str(rid).center(widths[0])}|", end="")
                                 print(f"{res.name.center(widths[1])}|", end="")
                                 print(f"{str(resource[1]).center(5)},{resource[0].center(widths[2] - 6)}|", end="")
-                                print(f"{str(self.Consumption[0][i][rid][1][recid]).center(widths[3])}|", end="")
+                                print(f"{str(self.Consumption[0][i][rid][1][recid] * popmod).center(widths[3])}|", end="")
                                 print(f"{str(self.Consumption[1][i][rid][1][recid]).center(widths[4])}|", end="")
                                 print(f"{str(self.Consumption[2][i][rid][1][recid]).center(widths[5])}|", end="")
                                 print(f"{str((self.PublicIndustry[i][rid][1][recid] / res.ISC) * res.Quantity).center(widths[6])}|", end="")
@@ -188,7 +192,7 @@ class Player:
                     print(f"\n|{str(rid).center(widths[0])}|", end="")
                     print(f"{res.name.center(widths[1])}|", end="")
                     print(f"{"-".center(widths[2])}|", end="")
-                    print(f"{str(self.Consumption[0][i][rid][1]).center(widths[3])}|", end="")
+                    print(f"{str(self.Consumption[0][i][rid][1] * popmod).center(widths[3])}|", end="")
                     print(f"{str(self.Consumption[1][i][rid][1]).center(widths[4])}|", end="")
                     print(f"{str(self.Consumption[2][i][rid][1]).center(widths[5])}|", end="")
                     print(f"{str((self.PublicIndustry[i][rid][1] / res.ISC) * res.Quantity).center(widths[6])}|", end="")
