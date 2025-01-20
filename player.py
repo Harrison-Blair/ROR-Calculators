@@ -225,21 +225,29 @@ class Player:
             try:
                 utils.CLS()
                 utils.PrintMenu("Increase Industry")
-                print(f"1. Agriculture Score (ISA/AS): {sum(i[1] for i in self.PublicIndustry[0])}/{self.IndustrialScores[0]}")
-                print(f"2. Mining Score (ISA/MS): {sum(i[1] for i in self.PublicIndustry[1])}/{self.IndustrialScores[1]}")
-                print(f"3. Industry Score (ISA/IS): {sum(sum(i[1]) for i in self.PublicIndustry[2])}/{self.IndustrialScores[2]}")
+                options = [
+                    "Agriculture",
+                    "Mining",
+                    "Industry"
+                ]
+                for num, opt in enumerate(options):
+                    print(f"{num}. {opt}: ", end="")
+                    if num == 2:
+                        print(f"({sum(sum(i[1]) for i in self.PublicIndustry[num])}/{self.IndustrialScores[num]})")
+                    else:
+                        print(f"({sum(i[1] for i in self.PublicIndustry[num])}/{self.IndustrialScores[num]})")
                 print("[E/e] Exit")
                 
                 print("\nWhich Industry would you like to invest in?")
 
-                c = input("Enter a number [1-3]: ")
+                c = input(f"Enter a number [0-{len(options) - 1}]: ")
 
                 if c.lower() == "e":
                     break
 
                 c = int(c)
 
-                if c in {1, 2, 3}:
+                if c in {0, 1, 2}:
                     print("\nHow much would you like to invest?")
                     print("\n5 Budget = 1 Industry Score")
                     print("\n[E/e] Exit")
