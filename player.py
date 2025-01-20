@@ -121,10 +121,10 @@ class Player:
         if not perpop:
             popmod = self.info["population"]
 
-        #"| # | NAME | INPUTS | CON | REQ | GOV | PROD | ISA | ISC | Q | M.V. | FACILILITY |"
-        #"  5    25      25      7     7     7      7    7     7    5    7         20    "
-        columns = ["#", "NAME", "INPUTS", "CON", "REQ", "GOV", "PROD", "ISA", "ISC", "Q", "M.V.", "FACILITY"]
-        widths = [5, 25, 25, 7, 7, 7, 7, 7, 7, 5, 7, 20]
+        #"| # | NAME | INPUTS | CON | REQ | GOV | EXP | IMP | PROD | ISA | ISC | Q | M.V. | FACILILITY |"
+        #"  5    25      25      7     7     7     7     7      7     7     7    5    7         20    "
+        columns = ["#", "NAME", "INPUTS", "CON", "REQ", "GOV", "EXP", "IMP", "PROD", "ISA", "ISC", "Q", "M.V.", "FACILITY"]
+        widths = [5, 25, 25, 7, 7, 7, 7, 7, 7, 7, 7, 5, 7, 20]
         industries = [type] if type is not None else range(3)
         for i in industries: # Headers
             match i:
@@ -163,7 +163,9 @@ class Player:
                             print(f" ".center(widths[8]) + "|", end="")
                             print(f" ".center(widths[9]) + "|", end="")
                             print(f" ".center(widths[10]) + "|", end="")
-                            print(f" ".center(widths[11]), end="")
+                            print(f" ".center(widths[11]) + "|", end="")
+                            print(f" ".center(widths[12]) + "|", end="")
+                            print(f" ".center(widths[13]), end="")
                         for resid, resource in enumerate(recipie):
                             if resid == 0:
                                 print(f"\n|{str(rid).center(widths[0])}|", end="")
@@ -172,18 +174,20 @@ class Player:
                                 print(f"{str(self.Consumption[0][i][rid][1][recid] * popmod).center(widths[3])}|", end="")
                                 print(f"{str(self.Consumption[1][i][rid][1][recid]).center(widths[4])}|", end="")
                                 print(f"{str(self.Consumption[2][i][rid][1][recid]).center(widths[5])}|", end="")
-                                print(f"{str((self.PublicIndustry[i][rid][1][recid] / res.ISC) * res.Quantity).center(widths[6])}|", end="")
-                                print(f"{str(self.PublicIndustry[i][rid][1][recid]).center(widths[7])}|", end="")
+                                print(f"{str(self.ImportExport[i][rid][1][1][recid]).center(widths[6])}|", end="")
+                                print(f"{str(self.ImportExport[i][rid][1][0][recid]).center(widths[7])}|", end="")
+                                print(f"{str((self.PublicIndustry[i][rid][1][recid] / res.ISC) * res.Quantity).center(widths[8])}|", end="")
+                                print(f"{str(self.PublicIndustry[i][rid][1][recid]).center(widths[9])}|", end="")
                                 if recid == 0:
-                                    print(f"{str(res.ISC).center(widths[8])}|", end="")
-                                    print(f"{str(res.Quantity).center(widths[9])}|", end="")
-                                    print(f"{str(res.Cost).center(widths[10])}|", end="")
-                                    print(f"{res.Facility.center(widths[11])}", end="")
+                                    print(f"{str(res.ISC).center(widths[10])}|", end="")
+                                    print(f"{str(res.Quantity).center(widths[11])}|", end="")
+                                    print(f"{str(res.Cost).center(widths[12])}|", end="")
+                                    print(f"{res.Facility.center(widths[13])}", end="")
                                 else:
-                                    print(f" ".center(widths[8]) + "|", end="")
-                                    print(f" ".center(widths[9]) + "|", end="")
                                     print(f" ".center(widths[10]) + "|", end="")
-                                    print(f" ".center(widths[11]), end="")
+                                    print(f" ".center(widths[11]) + "|", end="")
+                                    print(f" ".center(widths[12]) + "|", end="")
+                                    print(f" ".center(widths[13]), end="")
                             else:
                                 print(f"\n|{str(rid).center(widths[0])}|", end="")
                                 print(f"".center(widths[1]) + "|", end="")
@@ -196,7 +200,9 @@ class Player:
                                 print(f" ".center(widths[8]) + "|", end="")
                                 print(f" ".center(widths[9]) + "|", end="")
                                 print(f" ".center(widths[10]) + "|", end="")
-                                print(f" ".center(widths[11]), end="")
+                                print(f" ".center(widths[11]) + "|", end="")
+                                print(f" ".center(widths[12]) + "|", end="")
+                                print(f" ".center(widths[13]), end="")
                 except: # No recipies
                     print(f"\n|{str(rid).center(widths[0])}|", end="")
                     print(f"{res.name.center(widths[1])}|", end="")
@@ -204,12 +210,14 @@ class Player:
                     print(f"{str(self.Consumption[0][i][rid][1] * popmod).center(widths[3])}|", end="")
                     print(f"{str(self.Consumption[1][i][rid][1]).center(widths[4])}|", end="")
                     print(f"{str(self.Consumption[2][i][rid][1]).center(widths[5])}|", end="")
-                    print(f"{str((self.PublicIndustry[i][rid][1] / res.ISC) * res.Quantity).center(widths[6])}|", end="")
-                    print(f"{str(self.PublicIndustry[i][rid][1]).center(widths[7])}|", end="")
-                    print(f"{str(res.ISC).center(widths[8])}|", end="")
-                    print(f"{str(res.Quantity).center(widths[9])}|", end="")
-                    print(f"{str(res.Cost).center(widths[10])}|", end="")
-                    print(f"{res.Facility.center(widths[11])}", end="")
+                    print(f"{str(self.ImportExport[i][rid][1][1]).center(widths[6])}|", end="")
+                    print(f"{str(self.ImportExport[i][rid][1][0]).center(widths[7])}|", end="")
+                    print(f"{str((self.PublicIndustry[i][rid][1] / res.ISC) * res.Quantity).center(widths[8])}|", end="")
+                    print(f"{str(self.PublicIndustry[i][rid][1]).center(widths[9])}|", end="")
+                    print(f"{str(res.ISC).center(widths[10])}|", end="")
+                    print(f"{str(res.Quantity).center(widths[11])}|", end="")
+                    print(f"{str(res.Cost).center(widths[12])}|", end="")
+                    print(f"{res.Facility.center(widths[13])}", end="")
                 print("\n+", end="")
                 for col in columns: # Header Divider
                     print("-" * widths[columns.index(col)] + "+", end="")
@@ -414,8 +422,71 @@ class Player:
                                         except: 
                                             self.Consumption[1][sid][rid][1] += (allocation[rcid] / res.ISC) * cost
 
-    def ManageImportsExports(self): # TODO
-        pass
+    def ManageImportsExports(self):
+        while True:
+            utils.CLS()
+            utils.PrintMenu("Manage Imports/Exports")
+            for i in range(3):
+                self.PrintResources(i)
+            
+            options = [
+                "Agriculture",
+                "Mining",
+                "Industry"
+            ]
+            for num, opt in enumerate(options):
+                print(f"{num}. {opt}")
+
+            print("[E/e] Exit")
+
+            s = input(f"\nEnter a number [0-{len(options)}]: ")
+
+            if s.lower() == "e":
+                break
+
+            try:
+                s = int(s)
+
+                if s not in {0, 1, 2}:
+                    raise Exception("Invalid input")
+                
+                utils.CLS()
+                utils.PrintMenu(f"Manage {options[s]} Imp/Exp")
+                self.PrintResources(s)
+
+                print("[E/e] Exit")
+
+                rid = input(f"\nEnter the id of the resource you would like to manage the Imports/Exports of [0-{len(self.ImportExport[s]) - 1}]: ")
+
+                if rid.lower() == "e":
+                    break
+
+                rid = int(rid)
+
+                if rid not in range(0, len(self.ImportExport[s]) + 1):
+                    raise Exception("Invalid input")
+                
+                utils.CLS()
+                utils.PrintMenu(f"Manage {self.ImportExport[s][rid][0]} Imp/Exp")
+                self.PrintResources(s, rid)
+
+                print("\n[E/e] Exit")
+
+                match s:
+                    case 0 | 1:
+                        exp = float(input(f"\nEnter the amount of exports of {self.ImportExport[s][rid][0]}: "))
+                        imp = float(input(f"\nEnter the amount of imports of {self.ImportExport[s][rid][0]}: "))
+                        self.ImportExport[s][rid][1][0] = exp
+                        self.ImportExport[s][rid][1][1] = imp
+                    case 2:
+                        for recid, recipie in enumerate(self.Resources[s][rid].Ingredients):
+                            for resid, resource in enumerate(recipie):
+                                exp = float(input(f"\nEnter the amount of exports of recipie #{recid} for {self.Resources[s][rid].name}: "))
+                                imp = float(input(f"\nEnter the amount of imports of recipie #{recid} for {self.Resources[s][rid].name}: "))
+                                self.ImportExport[s][rid][1][0][recid] = exp
+                                self.ImportExport[s][rid][1][1][recid] = imp
+            except Exception as e:
+                utils.PrintErrorMenu(e)
 
     def GameOptions(self):
         while True:
