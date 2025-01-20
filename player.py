@@ -3,10 +3,9 @@ import utils
 import comodity
 
 class Player:
-    def __init__(self, info, policy, IndustrialScores, Resources, PublicIndustry, ImportExport, Consumption):
+    def __init__(self, info, IndustrialScores, Resources, PublicIndustry, ImportExport, Consumption):
         # Country Info
         self.info = info
-        self.policy = policy
 
         # Resource lists
         self.Resources = Resources
@@ -35,9 +34,6 @@ class Player:
         # Country Info
         PlayerData['info'] = self.info
 
-        # Country Policy
-        PlayerData['policy'] = self.policy
-
         # Industry, Agriculture, Mining Scores
         PlayerData['IndustrialScores'] = self.IndustrialScores
 
@@ -58,6 +54,11 @@ class Player:
             if key == "population":
                 print(f"{key.upper()}: {value} Million")
                 continue
+            if key == "policy":
+                print(f"POLICIES:")
+                for k, v in value.items():
+                    print(f"\t{k}: {v}")
+                continue
             print(f"{key.upper()}: {value}")
 
     def main(self):
@@ -68,15 +69,19 @@ class Player:
 
             print("Menu")
             print("-" * 45)
-            print(f"1. View Detailed Industry Overview")
-            print(f"2. Increase Industry")
-            print(f"3. Allocate Industry")
-            print(f"4. Manage Imports/Exports")
-            print(f"5. Modify Policy")
+            options = [
+                "View Detailed Industry Overview",
+                "Increase Industry",
+                "Allocate Industry",
+                "Manage Imports/Exports",
+                "Modify Country Info"
+            ]
+            for num, opt in enumerate(options):
+                print(f"{num}. {opt}")
             print("[O/o] Game Options")
             print("[E/e] Save and Exit")
 
-            c = input("\nEnter a number [1-4]: ")
+            c = input(f"\nEnter a number [0-{len(options) - 1}]: ")
 
             if c.lower() == "b":
                 continue
@@ -93,29 +98,28 @@ class Player:
                 c = int(c)
 
                 match c:
-                    case 1:
+                    case 0:
                         self.ViewDetailedIndustryOverview()
-                    case 2:
+                    case 1:
                         self.IncreaseIndustry()
-                    case 3:
+                    case 2:
                         self.AllocateIndustry()
                         self.CalculateIndustryConsumption()
                         self.PrivateIndustry = self.CalculatePrivateIndustry()
-                    case 4:
+                    case 3:
                         self.ManageImportsExports()
-                    case 5:
-                        self.ModifyPolicy()
+                    case 4:
+                        self.ModifyPlayerInfo()
                         self.PrivateIndustry = self.CalculatePrivateIndustry()
                     case _: # Default
                         raise Exception("Invalid input")
-
             except Exception as e:
                 utils.PrintErrorMenu(e) 
 
     def PrintResources(self, type=None, id=None, perpop=False):
         popmod = 1.0
         if not perpop:
-            popmod = self.info("population")
+            popmod = self.info["population"]
 
         #"| # | NAME | INPUTS | CON | REQ | GOV | PROD | ISA | ISC | Q | M.V. | FACILILITY |"
         #"  5    25      25      7     7     7      7    7     7    5    7         20    "
@@ -211,7 +215,7 @@ class Player:
                     print("-" * widths[columns.index(col)] + "+", end="")
             print()
                         
-    def ViewDetailedIndustryOverview(self):
+    def ViewDetailedIndustryOverview(self): # TODO: I feel this could be better/more descriptive somehow
         utils.CLS()
         utils.PrintMenu("Det. Ind. Overview")
 
@@ -369,14 +373,14 @@ class Player:
                     for comodity, allocation in self.PublicIndustry[i]:
                         for res in self.Resources[i]:
                             if comodity == res.name: 
-                                PrivateIndustry[i].append([comodity, ((allocation / res.ISC) * res.Quantity) * (100 - self.policy["PublicIndustry"]) / self.policy["PublicIndustry"]])
+                                PrivateIndustry[i].append([comodity, ((allocation / res.ISC) * res.Quantity) * (100 - self.info['policy']["PublicIndustryShare"]) / self.info['policy']["PublicIndustryShare"]])
                 case 2:
                     for comodity, allocation in self.PublicIndustry[i]:
                         for res in self.Resources[i]:
                             if comodity == res.name:
                                 PrivateIndustryProduction = []
                                 for rid, recipie in enumerate(res.Ingredients):
-                                    PrivateIndustryProduction.append(((allocation[rid] / res.ISC) * res.Quantity) * (100 - self.policy["PublicIndustry"]) / self.policy["PublicIndustry"])
+                                    PrivateIndustryProduction.append(((allocation[rid] / res.ISC) * res.Quantity) * (100 - self.info['policy']["PublicIndustryShare"]) / self.info['policy']["PublicIndustryShare"])
                                 PrivateIndustry[i].append([comodity, PrivateIndustryProduction])
         return PrivateIndustry
 
@@ -410,7 +414,7 @@ class Player:
                                         except: 
                                             self.Consumption[1][sid][rid][1] += (allocation[rcid] / res.ISC) * cost
 
-    def ManageImportsExports(self):
+    def ManageImportsExports(self): # TODO
         pass
 
     def GameOptions(self):
@@ -508,19 +512,31 @@ class Player:
             except Exception as e:
                 utils.PrintErrorMenu(e)
 
-    def ModifyPolicy(self):
+    def ModifyPlayerInfo(self):
         while True:
             utils.CLS()
-            utils.PrintMenu("Modify Policy")
-            opt = []
-            opt.append("Modify Tax Policy")
+            utils.PrintMenu("Modify Player Info")
 
-            for i, o in enumerate(opt):
-                print(f"{i + 1}. {o}")
+            options = []
+            types = []
 
+            for k, v in self.info.items():
+                options.append(k)
+                types.append(type(v))
+            
+            for num, opt in enumerate(options):
+                print(f"{num}. {opt}:")
+                if types[num] == dict:
+                    for k, v in self.info[opt].items():
+                        print(f"\t{k}: {v}")
+                else:
+                    if opt == "population":
+                        print(f"\t{self.info[opt]} Million")
+                        continue
+                    print(f"\t{self.info[opt]}")
             print("[E/e] Exit")
 
-            c = input(f"\nEnter a number [1-{len(opt)}]: ")
+            c = input(f"\nEnter an item to modify [0-{len(options) - 1}]: ")
 
             if c.lower() == "e":
                 break
@@ -528,29 +544,49 @@ class Player:
             try:
                 c = int(c)
 
-                match c:
-                    case 1:
-                        self.ModifyTaxPolicy()
-                    case _: # Default
-                        raise Exception("Invalid input")
-            except Exception as e:
-                utils.PrintErrorMenu(e)
-
-    def ModifyTaxPolicy(self):
-        while True:
-            utils.CLS()
-            utils.PrintMenu("Modify Tax Policy")
-
-            try:
-                print(f"The current ratio of [Public : Private] Industry ownership is: [{self.policy['PublicIndustry']} : {100 - self.policy['PublicIndustry']}]")
-                
-                pub = float(input("\nEnter the percentage of INDUSTRY that is PUBLIC: "))
-
-                if not 0 < pub < 100:
+                if c not in range(0, len(options)):
                     raise Exception("Invalid input")
 
-                self.policy['PublicIndustry'] = pub
+                if types[c] == dict:
+                    utils.CLS()
+                    utils.PrintMenu(f"Modify {options[c]}")
+                    keys = []
+                    for k, v in self.info[options[c]].items():
+                        keys.append(k)
+                        print(f"{k}: {v}")
+                    print("[E/e] Exit")
 
-                return
+                    key = input(f"\nEnter an item to modify: ")
+
+                    if key.lower() == "e":
+                        break
+
+                    try:
+                        if key not in keys:
+                            raise Exception("Policy Does Not Exist")
+
+                        value = input(f"\nEnter a new value for {key}: ")
+
+                        if type(self.info[options[c]][key]) == float:
+                            value = float(value)
+                        elif type(self.info[options[c]][key]) == int:
+                            value = int(value)
+                        elif type(self.info[options[c]][key]) == str:
+                            value = str(value)
+
+                        self.info[options[c]][key] = value
+                    except Exception as e:
+                        utils.PrintErrorMenu(e)
+                else:
+                    value = input(f"\nEnter a new value for {options[c]}: ")
+
+                    if type(self.info[options[c]]) == float:
+                        value = float(value)
+                    elif type(self.info[options[c]]) == int:
+                        value = int(value)
+                    elif type(self.info[options[c]]) == str:
+                        value = str(value)
+
+                    self.info[options[c]] = value
             except Exception as e:
                 utils.PrintErrorMenu(e)
