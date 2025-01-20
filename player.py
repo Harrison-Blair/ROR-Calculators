@@ -423,7 +423,71 @@ class Player:
                                             self.Consumption[1][sid][rid][1] += (allocation[rcid] / res.ISC) * cost
 
     def ManageImportsExports(self): # TODO
-        pass
+        while True:
+            utils.CLS()
+            utils.PrintMenu("Manage Imports/Exports")
+            for i in range(3):
+                self.PrintResources(i)
+            
+            options = [
+                "Agriculture",
+                "Mining",
+                "Industry"
+            ]
+            for num, opt in enumerate(options):
+                print(f"{num}. {opt}")
+
+            print("[E/e] Exit")
+
+            s = input(f"\nEnter a number [0-{len(options)}]: ")
+
+            if s.lower() == "e":
+                break
+
+            try:
+                s = int(s)
+
+                if s not in {0, 1, 2}:
+                    raise Exception("Invalid input")
+                
+                utils.CLS()
+                utils.PrintMenu(f"Manage {options[s]} Imp/Exp")
+                self.PrintResources(s)
+
+                print("[E/e] Exit")
+
+                rid = input(f"\nEnter the id of the resource you would like to manage the Imports/Exports of [0-{len(self.ImportExport[s]) - 1}]: ")
+
+                if rid.lower() == "e":
+                    break
+
+                rid = int(rid)
+
+                if rid not in range(0, len(self.ImportExport[s]) + 1):
+                    raise Exception("Invalid input")
+                
+                utils.CLS()
+                utils.PrintMenu(f"Manage {self.ImportExport[s][rid][0]} Imp/Exp")
+                self.PrintResources(s, rid)
+
+                print("\n[E/e] Exit")
+
+                match s:
+                    case 0 | 1:
+                        exp = float(input(f"\nEnter the amount of exports of {self.ImportExport[s][rid][0]}: "))
+                        imp = float(input(f"\nEnter the amount of imports of {self.ImportExport[s][rid][0]}: "))
+                        self.ImportExport[s][rid][1][0] = exp
+                        self.ImportExport[s][rid][1][1] = imp
+                    case 2:
+                        for recid, recipie in enumerate(self.Resources[s][rid].Ingredients):
+                            for resid, resource in enumerate(recipie):
+                                exp = float(input(f"\nEnter the amount of exports of recipie #{recid} for {self.Resources[s][rid].name}: "))
+                                imp = float(input(f"\nEnter the amount of imports of recipie #{recid} for {self.Resources[s][rid].name}: "))
+                                self.ImportExport[s][rid][1][0][recid] = exp
+                                self.ImportExport[s][rid][1][1][recid] = imp
+                
+            except Exception as e:
+                utils.PrintErrorMenu(e)
 
     def GameOptions(self):
         while True:
