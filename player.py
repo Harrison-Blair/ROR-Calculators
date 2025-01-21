@@ -342,29 +342,87 @@ class Player:
                 utils.PrintErrorMenu(e)
                 continue
 
+        sort_order = [[],[],[]]
+
         if method == "Name": # Using strings instead of method index for readibility
             for i in sectors:
                 self.Resources[i].sort(key=lambda x: x.name)
-                self.PublicIndustry[i].sort(key=lambda x: x[0])
-                self.PrivateIndustry[i].sort(key=lambda x: x[0])
-                self.ImportExport[i].sort(key=lambda x: x[0])
-                self.Stockpile[i].sort(key=lambda x: x[0])
-                for j in range(3):
-                    self.Consumption[j][i].sort(key=lambda x: x[0])
+                sort_order[i] = [x.name for x in self.Resources[i]]
 
         if method == "Stockpile":
-            pass
+            for i in sectors:
+                match i:    
+                    case 2:
+                        self.Stockpile[i].sort(reverse=True, key=lambda x: sum(x[1]))
+                    case _:
+                        self.Stockpile[i].sort(reverse=True, key=lambda x: x[1])
+                sort_order[i] = [x[0] for x in self.Stockpile[i]]
+
         if method == "Consumption":
-            pass
+            while True:
+                utils.CLS()
+                title = ""
+                for sid, sector in enumerate(sectors):
+                    if sid == len(sectors) - 1:
+                        title += sectornames[sector]
+                        continue
+                    title += sectornames[sector] + ", "
+                utils.PrintMenu(f"Sort {title} Resources by {method}")
+                consumptoptions = [
+                    "Population",
+                    "Industry",
+                    "Government"
+                ]
+                for num, opt in enumerate(consumptoptions):
+                    print(f"{num}. {opt}")
+
+                print("[E/e] Exit - Cancels Sorting")
+
+                con_sort = input(f"\nEnter a number to select a consumption type [0-{len(consumptoptions)}]: ")
+
+                if con_sort.lower() == "e":
+                    return
+
+                try:
+                    con_sort = int(con_sort)
+
+                    if con_sort not in range(len(consumptoptions) + 1):
+                        raise Exception("Invalid input")
+                    
+                    for i in sectors:
+                        match i:
+                            case 2:
+                                self.Consumption[con_sort][i].sort(reverse=True, key=lambda x: sum(x[1]))
+                            case _:
+                                self.Consumption[con_sort][i].sort(reverse=True, key=lambda x: x[1])
+                        sort_order[i] = [x[0] for x in self.Consumption[con_sort][i]]
+                    
+                    break
+                except Exception as e:
+                    utils.PrintErrorMenu(e)
+                    continue
+
         if method == "Import/Export":
             pass
+
         if method == "ISA":
             pass
+
         if method == "ISC":
             pass
+
         if method == "Market Value":
             pass
-        
+
+        for i in sectors:
+            self.Resources[i] = sorted(self.Resources[i], key=lambda x: sort_order[i].index(x.name))
+            self.PrivateIndustry[i] = sorted(self.PrivateIndustry[i], key=lambda x: sort_order[i].index(x[0]))
+            self.PublicIndustry[i] = sorted(self.PublicIndustry[i], key=lambda x: sort_order[i].index(x[0]))
+            self.ImportExport[i] = sorted(self.ImportExport[i], key=lambda x: sort_order[i].index(x[0]))
+            self.Stockpile[i] = sorted(self.Stockpile[i], key=lambda x: sort_order[i].index(x[0]))
+            for j in range(3):
+                self.Consumption[j][i] = sorted(self.Consumption[j][i], key=lambda x: sort_order[i].index(x[0]))            
+
         self.SavePlayer()
 
     def ViewDetailedIndustryOverview(self): # TODO: I feel this could be better/more descriptive somehow
