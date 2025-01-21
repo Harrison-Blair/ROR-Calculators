@@ -517,6 +517,7 @@ class Player:
                     r[1] += ((self.PublicIndustry[sid][rid][1] / self.Resources[sid][rid].ISC) * self.Resources[sid][rid].Quantity) + self.ImportExport[sid][rid][1][0] - self.ImportExport[sid][rid][1][1] - self.Consumption[1][sid][rid][1] - self.Consumption[2][sid][rid][1] - pcons
 
         # Add Budget from Exports to info['budget']
+        
         utils.CLS()
         utils.PrintMenu("Surplus to Stockpile")
         print("\nSurplus Added!")
