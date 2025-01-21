@@ -65,6 +65,9 @@ def CreatePlayerData():
     info['policy'] = {}
     info['policy']['PublicIndustryShare'] = 10.0
 
+    # Budget
+    info['budget'] = 0.0
+
     # Industry Scores
     agrs = float(input("Enter your Agricultural Score: "))
     mins = float(input("Enter your Mining Score: "))
@@ -75,6 +78,8 @@ def CreatePlayerData():
     Resources = [[],[],[]]
 
     PublicIndustry = [[],[],[]]
+
+    Stockpile = [[],[],[]]
 
     # Import/Export
     ImpExp = [[],[],[]]
@@ -93,6 +98,7 @@ def CreatePlayerData():
             Resources[0].append(res)
             ImpExp[0].append([res.name, [0.0, 0.0]])
             PublicIndustry[0].append([res.name, 0.0])
+            Stockpile[0].append([res.name, 0.0])
             for i in range(3):
                 Consumption[i][0].append([res.name, 0.0])
         elif resource['type'] == 'Mining':
@@ -100,6 +106,7 @@ def CreatePlayerData():
             Resources[1].append(res)
             ImpExp[1].append([res.name, [0.0, 0.0]])
             PublicIndustry[1].append([res.name, 0.0])
+            Stockpile[1].append([res.name, 0.0])
             for i in range(3):
                 Consumption[i][1].append([res.name, 0.0])
         elif resource['type'] == 'Industry':
@@ -110,10 +117,11 @@ def CreatePlayerData():
                 isa.append(0.0)
             ImpExp[2].append([res.name, [isa] * 2])
             PublicIndustry[2].append([res.name, isa])
+            Stockpile[2].append([res.name, isa])
             for i in range(3):
                 Consumption[i][2].append([res.name, isa])
     
-    return info, IndustrialScores, Resources, PublicIndustry, ImpExp, Consumption
+    return info, IndustrialScores, Resources, PublicIndustry, ImpExp, Stockpile, Consumption
 
 def LoadPlayerData(): 
     with open('player.json', 'r') as file:
@@ -140,4 +148,4 @@ def LoadPlayerData():
                     res = comodity.Comodity(resource['name'], resource['ISC'], resource['Quantity'], resource['Cost'], resource['Facility'], resource['Input'])
                     Resources[2].append(res)
 
-        return data['info'], data['IndustrialScores'], Resources, data['PublicIndustry'], data['ImportExport'], data['Consumption']
+        return data['info'], data['IndustrialScores'], Resources, data['PublicIndustry'], data['ImportExport'], data['Stockpile'], data['Consumption']

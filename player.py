@@ -3,7 +3,7 @@ import utils
 import comodity
 
 class Player:
-    def __init__(self, info, IndustrialScores, Resources, PublicIndustry, ImportExport, Consumption):
+    def __init__(self, info, IndustrialScores, Resources, PublicIndustry, ImportExport, Stockpile, Consumption):
         # Country Info
         self.info = info
 
@@ -21,6 +21,8 @@ class Player:
 
         # Imports and Exports
         self.ImportExport = ImportExport
+
+        self.Stockpile = Stockpile
 
         # Consumption
         self.Consumption = Consumption
@@ -42,6 +44,9 @@ class Player:
 
         # Imports, Exports
         PlayerData['ImportExport'] = self.ImportExport
+
+        # Stockpile
+        PlayerData['Stockpile'] = self.Stockpile
 
         # Consumption [Pop] [Ind] [Gov]
         PlayerData['Consumption'] = self.Consumption
@@ -121,10 +126,10 @@ class Player:
         if not perpop:
             popmod = self.info["population"]
 
-        #"| # | NAME | INPUTS | CON | REQ | GOV | EXP | IMP | PROD | ISA | ISC | Q | M.V. | FACILILITY |"
-        #"  5    25      25      7     7     7     7     7      7     7     7    5    7         20    "
-        columns = ["#", "NAME", "INPUTS", "CON", "REQ", "GOV", "EXP", "IMP", "PROD", "ISA", "ISC", "Q", "M.V.", "FACILITY"]
-        widths = [5, 25, 25, 7, 7, 7, 7, 7, 7, 7, 7, 5, 7, 20]
+        #"| # | NAME | INPUTS | SP | P-CON | I-REQ | GOV | EXP | IMP | PRI-I | PUB-I | ISA | ISC | Q | M-V | FACILILITY |"
+        #"  5    25      25     7      7       7     7      7     7      7       7      7     7    5    7        20    "
+        columns = ["#", "NAME", "INPUTS", "SP", "P-CON", "I-REQ", "GOV", "EXP", "IMP", "PRI-I", "PUB-I", "ISA", "ISC", "Q", "M-V", "FACILITY"]
+        widths = [5, 25, 25, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 5, 7, 20]
         industries = [type] if type is not None else range(3)
         for i in industries: # Headers
             match i:
@@ -165,29 +170,33 @@ class Player:
                             print(f" ".center(widths[10]) + "|", end="")
                             print(f" ".center(widths[11]) + "|", end="")
                             print(f" ".center(widths[12]) + "|", end="")
-                            print(f" ".center(widths[13]), end="")
+                            print(f" ".center(widths[13]) + "|", end="")
+                            print(f" ".center(widths[14]) + "|", end="")
+                            print(f" ".center(widths[15]), end="")
                         for resid, resource in enumerate(recipie):
                             if resid == 0:
                                 print(f"\n|{str(rid).center(widths[0])}|", end="")
                                 print(f"{res.name.center(widths[1])}|", end="")
                                 print(f"{str(resource[1]).center(5)},{resource[0].center(widths[2] - 6)}|", end="")
-                                print(f"{str(self.Consumption[0][i][rid][1][recid] * popmod).center(widths[3])}|", end="")
-                                print(f"{str(self.Consumption[1][i][rid][1][recid]).center(widths[4])}|", end="")
-                                print(f"{str(self.Consumption[2][i][rid][1][recid]).center(widths[5])}|", end="")
-                                print(f"{str(self.ImportExport[i][rid][1][1][recid]).center(widths[6])}|", end="")
-                                print(f"{str(self.ImportExport[i][rid][1][0][recid]).center(widths[7])}|", end="")
-                                print(f"{str((self.PublicIndustry[i][rid][1][recid] / res.ISC) * res.Quantity).center(widths[8])}|", end="")
-                                print(f"{str(self.PublicIndustry[i][rid][1][recid]).center(widths[9])}|", end="")
+                                print(f"{str(self.Stockpile[i][rid][1][recid]).center(widths[3])}|", end="")
+                                print(f"{str(self.Consumption[0][i][rid][1][recid] * popmod).center(widths[4])}|", end="")
+                                print(f"{str(self.Consumption[1][i][rid][1][recid]).center(widths[5])}|", end="")
+                                print(f"{str(self.Consumption[2][i][rid][1][recid]).center(widths[6])}|", end="")
+                                print(f"{str(self.ImportExport[i][rid][1][1][recid]).center(widths[7])}|", end="")
+                                print(f"{str(self.ImportExport[i][rid][1][0][recid]).center(widths[8])}|", end="")
+                                print(f"{str(self.PrivateIndustry[i][rid][1][recid]).center(widths[9])}|", end="")
+                                print(f"{str((self.PublicIndustry[i][rid][1][recid] / res.ISC) * res.Quantity).center(widths[10])}|", end="")
+                                print(f"{str(self.PublicIndustry[i][rid][1][recid]).center(widths[11])}|", end="")
                                 if recid == 0:
-                                    print(f"{str(res.ISC).center(widths[10])}|", end="")
-                                    print(f"{str(res.Quantity).center(widths[11])}|", end="")
-                                    print(f"{str(res.Cost).center(widths[12])}|", end="")
-                                    print(f"{res.Facility.center(widths[13])}", end="")
+                                    print(f"{str(res.ISC).center(widths[12])}|", end="")
+                                    print(f"{str(res.Quantity).center(widths[13])}|", end="")
+                                    print(f"{str(res.Cost).center(widths[14])}|", end="")
+                                    print(f"{res.Facility.center(widths[15])}", end="")
                                 else:
-                                    print(f" ".center(widths[10]) + "|", end="")
-                                    print(f" ".center(widths[11]) + "|", end="")
                                     print(f" ".center(widths[12]) + "|", end="")
-                                    print(f" ".center(widths[13]), end="")
+                                    print(f" ".center(widths[13]) + "|", end="")
+                                    print(f" ".center(widths[14]) + "|", end="")
+                                    print(f" ".center(widths[15]), end="")
                             else:
                                 print(f"\n|{str(rid).center(widths[0])}|", end="")
                                 print(f"".center(widths[1]) + "|", end="")
@@ -202,22 +211,26 @@ class Player:
                                 print(f" ".center(widths[10]) + "|", end="")
                                 print(f" ".center(widths[11]) + "|", end="")
                                 print(f" ".center(widths[12]) + "|", end="")
-                                print(f" ".center(widths[13]), end="")
+                                print(f" ".center(widths[13]) + "|", end="")
+                                print(f" ".center(widths[14]) + "|", end="")
+                                print(f" ".center(widths[15]), end="")
                 except: # No recipies
                     print(f"\n|{str(rid).center(widths[0])}|", end="")
                     print(f"{res.name.center(widths[1])}|", end="")
                     print(f"{"-".center(widths[2])}|", end="")
-                    print(f"{str(self.Consumption[0][i][rid][1] * popmod).center(widths[3])}|", end="")
-                    print(f"{str(self.Consumption[1][i][rid][1]).center(widths[4])}|", end="")
-                    print(f"{str(self.Consumption[2][i][rid][1]).center(widths[5])}|", end="")
-                    print(f"{str(self.ImportExport[i][rid][1][1]).center(widths[6])}|", end="")
-                    print(f"{str(self.ImportExport[i][rid][1][0]).center(widths[7])}|", end="")
-                    print(f"{str((self.PublicIndustry[i][rid][1] / res.ISC) * res.Quantity).center(widths[8])}|", end="")
-                    print(f"{str(self.PublicIndustry[i][rid][1]).center(widths[9])}|", end="")
-                    print(f"{str(res.ISC).center(widths[10])}|", end="")
-                    print(f"{str(res.Quantity).center(widths[11])}|", end="")
-                    print(f"{str(res.Cost).center(widths[12])}|", end="")
-                    print(f"{res.Facility.center(widths[13])}", end="")
+                    print(f"{str(self.Stockpile[i][rid][1]).center(widths[3])}|", end="")
+                    print(f"{str(self.Consumption[0][i][rid][1] * popmod).center(widths[4])}|", end="")
+                    print(f"{str(self.Consumption[1][i][rid][1]).center(widths[5])}|", end="")
+                    print(f"{str(self.Consumption[2][i][rid][1]).center(widths[6])}|", end="")
+                    print(f"{str(self.ImportExport[i][rid][1][1]).center(widths[7])}|", end="")
+                    print(f"{str(self.ImportExport[i][rid][1][0]).center(widths[8])}|", end="")
+                    print(f"{str(self.PrivateIndustry[i][rid][1]).center(widths[9])}|", end="")
+                    print(f"{str((self.PublicIndustry[i][rid][1] / res.ISC) * res.Quantity).center(widths[10])}|", end="")
+                    print(f"{str(self.PublicIndustry[i][rid][1]).center(widths[11])}|", end="")
+                    print(f"{str(res.ISC).center(widths[12])}|", end="")
+                    print(f"{str(res.Quantity).center(widths[13])}|", end="")
+                    print(f"{str(res.Cost).center(widths[14])}|", end="")
+                    print(f"{res.Facility.center(widths[15])}", end="")
                 print("\n+", end="")
                 for col in columns: # Header Divider
                     print("-" * widths[columns.index(col)] + "+", end="")
@@ -476,28 +489,63 @@ class Player:
                     case 0 | 1:
                         exp = float(input(f"\nEnter the amount of exports of {self.ImportExport[s][rid][0]}: "))
                         imp = float(input(f"\nEnter the amount of imports of {self.ImportExport[s][rid][0]}: "))
-                        self.ImportExport[s][rid][1][0] = exp
-                        self.ImportExport[s][rid][1][1] = imp
+                        self.ImportExport[s][rid][1][1] = exp
+                        self.ImportExport[s][rid][1][0] = imp
                     case 2:
                         for recid, recipie in enumerate(self.Resources[s][rid].Ingredients):
                             for resid, resource in enumerate(recipie):
                                 exp = float(input(f"\nEnter the amount of exports of recipie #{recid} for {self.Resources[s][rid].name}: "))
                                 imp = float(input(f"\nEnter the amount of imports of recipie #{recid} for {self.Resources[s][rid].name}: "))
-                                self.ImportExport[s][rid][1][0][recid] = exp
-                                self.ImportExport[s][rid][1][1][recid] = imp
+                                self.ImportExport[s][rid][1][1][recid] = exp
+                                self.ImportExport[s][rid][1][0][recid] = imp
             except Exception as e:
                 utils.PrintErrorMenu(e)
+
+    def SurplusToStockpile(self):
+        # Add resourse surplus to stockpile
+        for sid, s in enumerate(self.Stockpile):
+            for rid, r in enumerate(s):
+                try:
+                    for aid, a in enumerate(r[1]):
+                        pcons = (self.Consumption[0][sid][rid][1][aid] * self.info['population']) - (self.PrivateIndustry[sid][rid][1][aid] * self.Resources[sid][rid].Quantity)
+                        if pcons < 0:
+                            pcons = 0
+                        a += ((self.PublicIndustry[sid][rid][1][aid] / self.Resources[sid][rid].ISC) * self.Resources[sid][rid].Quantity) + self.ImportExport[sid][rid][1][0][aid] - self.ImportExport[sid][rid][1][1][aid] - self.Consumption[1][sid][rid][1][aid] - self.Consumption[2][sid][rid][1][aid] - pcons
+                except:
+                    pcons = (self.Consumption[0][sid][rid][1] * self.info['population']) - (self.PrivateIndustry[sid][rid][1] * self.Resources[sid][rid].Quantity)
+                    if pcons < 0:
+                        pcons = 0
+                    r[1] += ((self.PublicIndustry[sid][rid][1] / self.Resources[sid][rid].ISC) * self.Resources[sid][rid].Quantity) + self.ImportExport[sid][rid][1][0] - self.ImportExport[sid][rid][1][1] - self.Consumption[1][sid][rid][1] - self.Consumption[2][sid][rid][1] - pcons
+
+        # Add Budget from Exports to info['budget']
+        for sid, s in enumerate(self.ImportExport):
+            for rid, r in enumerate(s):
+                try:
+                    for aid, a in enumerate(r[1][1]):
+                        self.info['budget'] += a * self.Resources[sid][rid].Cost
+                except:
+                    self.info['budget'] += r[1][1] * self.Resources[sid][rid].Cost
+
+        utils.CLS()
+        utils.PrintMenu("Surplus to Stockpile")
+        print("\nSurplus Added!")
+        input("\nPress Enter to continue...")
 
     def GameOptions(self):
         while True:
             utils.CLS()
             utils.PrintMenu("Game Options")
-            print("1. Add Resource")
-            print("2. Modify Population Consumption")
+            options = [
+                "Add Resource",
+                "Modify Population Consumption",
+                "Add Industry Surplus to Stockpile"
+            ]
+            for num, opt in enumerate(options):
+                print(f"{num}. {opt}")
 
             print("[E/e] Exit")
 
-            c = input("\nEnter a number [1-x]: ")
+            c = input(f"\nEnter a number [0-{len(options) - 1}]: ")
 
             if c.lower() == "e":
                 break
@@ -506,10 +554,12 @@ class Player:
                 c = int(c)
 
                 match c:
-                    case 1:
+                    case 0:
                         self.CreateResource()
-                    case 2:
+                    case 1:
                         self.ModifyPopulationConsumption()
+                    case 2:
+                        self.SurplusToStockpile()
                     case _: # Default
                         raise Exception("Invalid input")
                     
