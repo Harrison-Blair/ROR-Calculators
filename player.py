@@ -61,7 +61,6 @@ class Player:
 
         with open('resources.json', 'w') as file:
             json.dump(resources, file)
-                
 
     def PrintInfo(self):
         for key, value in self.info.items():
@@ -642,8 +641,11 @@ class Player:
                 try:
                     for aid, a in enumerate(r[1][1]):
                         self.info['budget'] += a * self.Resources[sid][rid].Cost
+                    for aid, a in enumerate(r[1][0]):
+                        self.info['budget'] -= a * self.Resources[sid][rid].Cost
                 except:
                     self.info['budget'] += r[1][1] * self.Resources[sid][rid].Cost
+                    self.info['budget'] -= r[1][0] * self.Resources[sid][rid].Cost
 
         utils.CLS()
         utils.PrintMenu("Surplus to Stockpile")
