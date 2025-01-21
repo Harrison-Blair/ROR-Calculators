@@ -352,6 +352,19 @@ class Player:
                 for j in range(3):
                     self.Consumption[j][i].sort(key=lambda x: x[0])
 
+        if method == "Stockpile":
+            pass
+        if method == "Consumption":
+            pass
+        if method == "Import/Export":
+            pass
+        if method == "ISA":
+            pass
+        if method == "ISC":
+            pass
+        if method == "Market Value":
+            pass
+        
         self.SavePlayer()
 
     def ViewDetailedIndustryOverview(self): # TODO: I feel this could be better/more descriptive somehow
