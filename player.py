@@ -315,8 +315,6 @@ class Player:
                 title += sectornames[sector] + ", "
             utils.PrintMenu(f"Sort {title} Resources")
 
-            
-
             for num, opt in enumerate(methods):
                 print(f"{num}. {opt}")
 
