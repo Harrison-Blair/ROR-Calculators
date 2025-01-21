@@ -65,6 +65,9 @@ def CreatePlayerData():
     info['policy'] = {}
     info['policy']['PublicIndustryShare'] = 10.0
 
+    # Budget
+    info['budget'] = 0.0
+
     # Industry Scores
     agrs = float(input("Enter your Agricultural Score: "))
     mins = float(input("Enter your Mining Score: "))

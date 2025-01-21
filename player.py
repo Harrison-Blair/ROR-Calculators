@@ -489,19 +489,20 @@ class Player:
                     case 0 | 1:
                         exp = float(input(f"\nEnter the amount of exports of {self.ImportExport[s][rid][0]}: "))
                         imp = float(input(f"\nEnter the amount of imports of {self.ImportExport[s][rid][0]}: "))
-                        self.ImportExport[s][rid][1][0] = exp
-                        self.ImportExport[s][rid][1][1] = imp
+                        self.ImportExport[s][rid][1][1] = exp
+                        self.ImportExport[s][rid][1][0] = imp
                     case 2:
                         for recid, recipie in enumerate(self.Resources[s][rid].Ingredients):
                             for resid, resource in enumerate(recipie):
                                 exp = float(input(f"\nEnter the amount of exports of recipie #{recid} for {self.Resources[s][rid].name}: "))
                                 imp = float(input(f"\nEnter the amount of imports of recipie #{recid} for {self.Resources[s][rid].name}: "))
-                                self.ImportExport[s][rid][1][0][recid] = exp
-                                self.ImportExport[s][rid][1][1][recid] = imp
+                                self.ImportExport[s][rid][1][1][recid] = exp
+                                self.ImportExport[s][rid][1][0][recid] = imp
             except Exception as e:
                 utils.PrintErrorMenu(e)
 
     def SurplusToStockpile(self):
+        # Add resourse surplus to stockpile
         for sid, s in enumerate(self.Stockpile):
             for rid, r in enumerate(s):
                 try:
@@ -517,7 +518,14 @@ class Player:
                     r[1] += ((self.PublicIndustry[sid][rid][1] / self.Resources[sid][rid].ISC) * self.Resources[sid][rid].Quantity) + self.ImportExport[sid][rid][1][0] - self.ImportExport[sid][rid][1][1] - self.Consumption[1][sid][rid][1] - self.Consumption[2][sid][rid][1] - pcons
 
         # Add Budget from Exports to info['budget']
-        
+        for sid, s in enumerate(self.ImportExport):
+            for rid, r in enumerate(s):
+                try:
+                    for aid, a in enumerate(r[1][1]):
+                        self.info['budget'] += a * self.Resources[sid][rid].Cost
+                except:
+                    self.info['budget'] += r[1][1] * self.Resources[sid][rid].Cost
+
         utils.CLS()
         utils.PrintMenu("Surplus to Stockpile")
         print("\nSurplus Added!")
