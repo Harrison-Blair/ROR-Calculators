@@ -54,6 +54,15 @@ class Player:
         with open('player.json', 'w') as file:
             json.dump(PlayerData, file)
 
+        resources = []
+        for s in self.Resources:
+            for r in s:
+                resources.append(r.__dict__)
+
+        with open('resources.json', 'w') as file:
+            json.dump(resources, file)
+                
+
     def PrintInfo(self):
         for key, value in self.info.items():
             if key == "population":
@@ -126,9 +135,9 @@ class Player:
         if not perpop:
             popmod = self.info["population"]
 
-        #"| # | NAME | INPUTS | SP | P-CON | I-REQ | GOV | EXP | IMP | PRI-I | PUB-I | ISA | ISC | Q | M-V | FACILILITY |"
-        #"  5    25      25     7      7       7     7      7     7      7       7      7     7    5    7        20    "
-        columns = ["#", "NAME", "INPUTS", "SP", "P-CON", "I-REQ", "GOV", "EXP", "IMP", "PRI-I", "PUB-I", "ISA", "ISC", "Q", "M-V", "FACILITY"]
+        #"| # | NAME | INGREDIENTS | SP | P-CON | I-REQ | GOV | EXP | IMP | PRI-I | PUB-I | ISA | ISC | Q | M-V | FACILILITY |"
+        #"  5    25        25         7      7       7     7      7     7      7       7      7     7    5    7        20    "
+        columns = ["#", "NAME", "INGREDIENTS", "SP", "P-CON", "I-REQ", "GOV", "EXP", "IMP", "PRI-I", "PUB-I", "ISA", "ISC", "Q", "M-V", "FACILITY"]
         widths = [5, 25, 25, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 5, 7, 20]
         industries = [type] if type is not None else range(3)
         for i in industries: # Headers
@@ -235,7 +244,22 @@ class Player:
                 for col in columns: # Header Divider
                     print("-" * widths[columns.index(col)] + "+", end="")
             print()
-                        
+
+    def SortResources(self):
+        # Alphabetically
+        for i in range(len(self.Resources)):
+            self.Resources[i].sort(key=lambda x: x.name)
+            self.PublicIndustry[i].sort(key=lambda x: x[0])
+            self.PrivateIndustry[i].sort(key=lambda x: x[0])
+            self.ImportExport[i].sort(key=lambda x: x[0])
+            self.Stockpile[i].sort(key=lambda x: x[0])
+            for j in range(3):
+                self.Consumption[j][i].sort(key=lambda x: x[0])
+
+        
+
+        self.SavePlayer()
+
     def ViewDetailedIndustryOverview(self): # TODO: I feel this could be better/more descriptive somehow
         utils.CLS()
         utils.PrintMenu("Det. Ind. Overview")
@@ -536,9 +560,13 @@ class Player:
             utils.CLS()
             utils.PrintMenu("Game Options")
             options = [
-                "Add Resource",
+                "Add Resource", #0
+                "Edit Resource",
+                "Remove Resource", 
+                "Reload Resource Prices", #3
+                "Sort Resources",
                 "Modify Population Consumption",
-                "Add Industry Surplus to Stockpile"
+                "Add Industry Surplus to Stockpile" #6
             ]
             for num, opt in enumerate(options):
                 print(f"{num}. {opt}")
@@ -554,11 +582,11 @@ class Player:
                 c = int(c)
 
                 match c:
-                    case 0:
-                        self.CreateResource()
-                    case 1:
+                    case 4:
+                        self.SortResources()
+                    case 5:
                         self.ModifyPopulationConsumption()
-                    case 2:
+                    case 6:
                         self.SurplusToStockpile()
                     case _: # Default
                         raise Exception("Invalid input")

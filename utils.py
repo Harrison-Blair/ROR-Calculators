@@ -94,7 +94,7 @@ def CreatePlayerData():
         print(f"{resource}")
 
         if resource['type'] == 'Agriculture':
-            res = comodity.Comodity(resource['name'], resource['ISC'], resource['Quantity'], resource['Cost'], f"{resource['name']} Farm")
+            res = comodity.Comodity(resource['name'], resource['type'], resource['ISC'], resource['Quantity'], resource['Cost'], f"{resource['name']} Farm")
             Resources[0].append(res)
             ImpExp[0].append([res.name, [0.0, 0.0]])
             PublicIndustry[0].append([res.name, 0.0])
@@ -102,7 +102,7 @@ def CreatePlayerData():
             for i in range(3):
                 Consumption[i][0].append([res.name, 0.0])
         elif resource['type'] == 'Mining':
-            res = comodity.Comodity(resource['name'], resource['ISC'], resource['Quantity'], resource['Cost'], f"{resource['name']} Mine")
+            res = comodity.Comodity(resource['name'], resource['type'], resource['ISC'], resource['Quantity'], resource['Cost'], f"{resource['name']} Mine")
             Resources[1].append(res)
             ImpExp[1].append([res.name, [0.0, 0.0]])
             PublicIndustry[1].append([res.name, 0.0])
@@ -110,7 +110,7 @@ def CreatePlayerData():
             for i in range(3):
                 Consumption[i][1].append([res.name, 0.0])
         elif resource['type'] == 'Industry':
-            res = comodity.Comodity(resource['name'], resource['ISC'], resource['Quantity'], resource['Cost'], resource['Facility'], resource['Input'])
+            res = comodity.Comodity(resource['name'], resource['type'], resource['ISC'], resource['Quantity'], resource['Cost'], resource['Facility'], resource['Ingredients'])
             Resources[2].append(res)
             isa = []
             for i in resource['Input']:
@@ -139,13 +139,13 @@ def LoadPlayerData():
 
             match resource['type']:
                 case 'Agriculture':
-                    res = comodity.Comodity(resource['name'], resource['ISC'], resource['Quantity'], resource['Cost'], f"{resource['name']} Farm")
+                    res = comodity.Comodity(resource['name'], resource['type'], resource['ISC'], resource['Quantity'], resource['Cost'], f"{resource['name']} Farm")
                     Resources[0].append(res)
                 case 'Mining':
-                    res = comodity.Comodity(resource['name'], resource['ISC'], resource['Quantity'], resource['Cost'], f"{resource['name']} Mine")
+                    res = comodity.Comodity(resource['name'], resource['type'], resource['ISC'], resource['Quantity'], resource['Cost'], f"{resource['name']} Mine")
                     Resources[1].append(res)
                 case 'Industry':
-                    res = comodity.Comodity(resource['name'], resource['ISC'], resource['Quantity'], resource['Cost'], resource['Facility'], resource['Input'])
+                    res = comodity.Comodity(resource['name'], resource['type'], resource['ISC'], resource['Quantity'], resource['Cost'], resource['Facility'], resource['Ingredients'])
                     Resources[2].append(res)
 
         return data['info'], data['IndustrialScores'], Resources, data['PublicIndustry'], data['ImportExport'], data['Stockpile'], data['Consumption']
