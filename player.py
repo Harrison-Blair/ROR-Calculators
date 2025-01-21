@@ -246,17 +246,114 @@ class Player:
             print()
 
     def SortResources(self):
-        # Alphabetically
-        for i in range(len(self.Resources)):
-            self.Resources[i].sort(key=lambda x: x.name)
-            self.PublicIndustry[i].sort(key=lambda x: x[0])
-            self.PrivateIndustry[i].sort(key=lambda x: x[0])
-            self.ImportExport[i].sort(key=lambda x: x[0])
-            self.Stockpile[i].sort(key=lambda x: x[0])
-            for j in range(3):
-                self.Consumption[j][i].sort(key=lambda x: x[0])
+        sectornames = [
+                "Agriculture",
+                "Mining",
+                "Industry"
+            ]
+        sectors = []
+        while True:
+            utils.CLS()
+            utils.PrintMenu("Sort Resources")
+            for num, opt in enumerate(sectornames):
+                print(f"{num}. {opt}")
 
+            if len(sectors) != 0:
+                print("\n[S/s] Select Sorting Method")
+
+            print("[E/e] Exit - Cancels Sorting")
+
+            selected = ""
+            if len(sectors) != 0:
+                for s in sectors:
+                    if s == sectors[-1]:
+                        selected += sectornames[s]
+                        continue
+                    selected += sectornames[s] + ", "
+
+                print(f"\nSelected Sectors: [{selected}]")
+
+            s = input(f"\nEnter a number to add/remove a sector to the storting queue [0-{len(sectornames)}]: ")
+
+            if s.lower() == "e":
+                return
+            
+            if s.lower() == "s":
+                break
+            
+            try:
+                s = int(s)
+
+                if s not in range(len(self.Resources) + 1): 
+                    raise Exception("Invalid input")
+                
+                if s in sectors:
+                    sectors.remove(s)
+                else:
+                    sectors.append(s)
+            except Exception as e:
+                utils.PrintErrorMenu(e)
+                continue
         
+        methods = [
+                "Name",
+                "Stockpile",
+                "Consumption",
+                "Import/Export",
+                "ISA",
+                "ISC",
+                "Market Value"
+            ]
+        method = methods[0] # Default to Name
+        while True:
+            utils.CLS()
+            title = ""
+            for sid, sector in enumerate(sectors):
+                if sid == len(sectors) - 1:
+                    title += sectornames[sector]
+                    continue
+                title += sectornames[sector] + ", "
+            utils.PrintMenu(f"Sort {title} Resources")
+
+            
+
+            for num, opt in enumerate(methods):
+                print(f"{num}. {opt}")
+
+            print("\n[S/s] Sort Resources")
+
+            print("[E/e] Exit - Cancels Sorting")
+
+            print(f"\nSelected Sorting Method: {method}")
+
+            s = input(f"\nEnter a number to select a sorting method [0-{len(methods)}]: ")
+
+            if s.lower() == "s":
+                break
+
+            if s.lower() == "e":
+                return
+            
+            try:
+                s = int(s)
+
+                if s not in range(len(methods) + 1):
+                    raise Exception("Invalid input")
+                
+                method = methods[s]
+            except Exception as e:
+                utils.PrintErrorMenu(e)
+                continue
+
+        if method == "Name": # Using strings instead of method index for readibility
+            for i in sectors:
+                self.Resources[i].sort(key=lambda x: x.name)
+                self.PublicIndustry[i].sort(key=lambda x: x[0])
+                self.PrivateIndustry[i].sort(key=lambda x: x[0])
+                self.ImportExport[i].sort(key=lambda x: x[0])
+                self.Stockpile[i].sort(key=lambda x: x[0])
+                for j in range(3):
+                    self.Consumption[j][i].sort(key=lambda x: x[0])
 
         self.SavePlayer()
 
