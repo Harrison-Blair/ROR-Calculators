@@ -3,7 +3,7 @@ import utils
 import comodity
 
 class Player:
-    def __init__(self, info, IndustrialScores, Resources, PublicIndustry, ImportExport, Consumption):
+    def __init__(self, info, IndustrialScores, Resources, PublicIndustry, ImportExport, Stockpile, Consumption):
         # Country Info
         self.info = info
 
@@ -21,6 +21,8 @@ class Player:
 
         # Imports and Exports
         self.ImportExport = ImportExport
+
+        self.Stockpile = Stockpile
 
         # Consumption
         self.Consumption = Consumption
@@ -42,6 +44,9 @@ class Player:
 
         # Imports, Exports
         PlayerData['ImportExport'] = self.ImportExport
+
+        # Stockpile
+        PlayerData['Stockpile'] = self.Stockpile
 
         # Consumption [Pop] [Ind] [Gov]
         PlayerData['Consumption'] = self.Consumption
