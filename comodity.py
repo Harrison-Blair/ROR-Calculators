@@ -1,7 +1,8 @@
 
 class Comodity:
-    def __init__(self, name, ISC, Quantity, Cost, Facility=None, Ingredients=None):
+    def __init__(self, name, sector, ISC, Quantity, Cost, Facility=None, Ingredients=None):
         self.name = name
+        self.type = sector
         self.ISC = ISC
         self.Quantity = Quantity
         self.Cost = Cost

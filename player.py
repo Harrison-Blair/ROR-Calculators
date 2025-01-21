@@ -54,6 +54,14 @@ class Player:
         with open('player.json', 'w') as file:
             json.dump(PlayerData, file)
 
+        resources = []
+        for s in self.Resources:
+            for r in s:
+                resources.append(r.__dict__)
+
+        with open('resources.json', 'w') as file:
+            json.dump(resources, file)
+
     def PrintInfo(self):
         for key, value in self.info.items():
             if key == "population":
@@ -126,9 +134,9 @@ class Player:
         if not perpop:
             popmod = self.info["population"]
 
-        #"| # | NAME | INPUTS | SP | P-CON | I-REQ | GOV | EXP | IMP | PRI-I | PUB-I | ISA | ISC | Q | M-V | FACILILITY |"
-        #"  5    25      25     7      7       7     7      7     7      7       7      7     7    5    7        20    "
-        columns = ["#", "NAME", "INPUTS", "SP", "P-CON", "I-REQ", "GOV", "EXP", "IMP", "PRI-I", "PUB-I", "ISA", "ISC", "Q", "M-V", "FACILITY"]
+        #"| # | NAME | INGREDIENTS | SP | P-CON | I-REQ | GOV | EXP | IMP | PRI-I | PUB-I | ISA | ISC | Q | M-V | FACILILITY |"
+        #"  5    25        25         7      7       7     7      7     7      7       7      7     7    5    7        20    "
+        columns = ["#", "NAME", "INGREDIENTS", "SP", "P-CON", "I-REQ", "GOV", "EXP", "IMP", "PRI-I", "PUB-I", "ISA", "ISC", "Q", "M-V", "FACILITY"]
         widths = [5, 25, 25, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 5, 7, 20]
         industries = [type] if type is not None else range(3)
         for i in industries: # Headers
@@ -235,7 +243,237 @@ class Player:
                 for col in columns: # Header Divider
                     print("-" * widths[columns.index(col)] + "+", end="")
             print()
-                        
+
+    def SortResources(self):
+        sectornames = [
+                "Agriculture",
+                "Mining",
+                "Industry"
+            ]
+        sectors = []
+        while True:
+            utils.CLS()
+            utils.PrintMenu("Sort Resources")
+            for num, opt in enumerate(sectornames):
+                print(f"{num}. {opt}")
+
+            if len(sectors) != 0:
+                print("\n[S/s] Select Sorting Method")
+
+            print("[E/e] Exit - Cancels Sorting")
+
+            selected = ""
+            if len(sectors) != 0:
+                for s in sectors:
+                    if s == sectors[-1]:
+                        selected += sectornames[s]
+                        continue
+                    selected += sectornames[s] + ", "
+
+                print(f"\nSelected Sectors: [{selected}]")
+
+            s = input(f"\nEnter a number to add/remove a sector to the storting queue [0-{len(sectornames)}]: ")
+
+            if s.lower() == "e":
+                return
+            
+            if s.lower() == "s":
+                break
+            
+            try:
+                s = int(s)
+
+                if s not in range(len(self.Resources) + 1): 
+                    raise Exception("Invalid input")
+                
+                if s in sectors:
+                    sectors.remove(s)
+                else:
+                    sectors.append(s)
+            except Exception as e:
+                utils.PrintErrorMenu(e)
+                continue
+        
+        methods = [
+                "Name",
+                "Stockpile",
+                "Consumption",
+                "Import/Export",
+                "ISA",
+                "ISC",
+                "Market Value"
+            ]
+        method = methods[0] # Default to Name
+        while True:
+            utils.CLS()
+            title = ""
+            for sid, sector in enumerate(sectors):
+                if sid == len(sectors) - 1:
+                    title += sectornames[sector]
+                    continue
+                title += sectornames[sector] + ", "
+            utils.PrintMenu(f"Sort {title} Resources")
+
+            for num, opt in enumerate(methods):
+                print(f"{num}. {opt}")
+
+            print("\n[S/s] Sort Resources")
+
+            print("[E/e] Exit - Cancels Sorting")
+
+            print(f"\nSelected Sorting Method: {method}")
+
+            s = input(f"\nEnter a number to select a sorting method [0-{len(methods)}]: ")
+
+            if s.lower() == "s":
+                break
+
+            if s.lower() == "e":
+                return
+            
+            try:
+                s = int(s)
+
+                if s not in range(len(methods) + 1):
+                    raise Exception("Invalid input")
+                
+                method = methods[s]
+            except Exception as e:
+                utils.PrintErrorMenu(e)
+                continue
+
+        sort_order = [[],[],[]]
+
+        if method == "Name": # Using strings instead of method index for readibility
+            for i in sectors:
+                self.Resources[i].sort(key=lambda x: x.name)
+                sort_order[i] = [x.name for x in self.Resources[i]]
+
+        if method == "Stockpile":
+            for i in sectors:
+                match i:    
+                    case 2:
+                        self.Stockpile[i].sort(reverse=True, key=lambda x: sum(x[1]))
+                    case _:
+                        self.Stockpile[i].sort(reverse=True, key=lambda x: x[1])
+                sort_order[i] = [x[0] for x in self.Stockpile[i]]
+
+        if method == "Consumption":
+            while True:
+                utils.CLS()
+                title = ""
+                for sid, sector in enumerate(sectors):
+                    if sid == len(sectors) - 1:
+                        title += sectornames[sector]
+                        continue
+                    title += sectornames[sector] + ", "
+                utils.PrintMenu(f"Sort {title} Resources by {method}")
+                consumptoptions = [
+                    "Population",
+                    "Industry",
+                    "Government"
+                ]
+                for num, opt in enumerate(consumptoptions):
+                    print(f"{num}. {opt}")
+
+                print("[E/e] Exit - Cancels Sorting")
+
+                con_sort = input(f"\nEnter a number to select a consumption type [0-{len(consumptoptions)}]: ")
+
+                if con_sort.lower() == "e":
+                    return
+
+                try:
+                    con_sort = int(con_sort)
+
+                    if con_sort not in range(len(consumptoptions) + 1):
+                        raise Exception("Invalid input")
+                    
+                    for i in sectors:
+                        match i:
+                            case 2:
+                                self.Consumption[con_sort][i].sort(reverse=True, key=lambda x: sum(x[1]))
+                            case _:
+                                self.Consumption[con_sort][i].sort(reverse=True, key=lambda x: x[1])
+                        sort_order[i] = [x[0] for x in self.Consumption[con_sort][i]]
+                    break
+                except Exception as e:
+                    utils.PrintErrorMenu(e)
+                    continue
+
+        if method == "Import/Export":
+            while True:
+                utils.CLS()
+                title = ""
+                for sid, sector in enumerate(sectors):
+                    if sid == len(sectors) - 1:
+                        title += sectornames[sector]
+                        continue
+                    title += sectornames[sector] + ", "
+                utils.PrintMenu(f"Sort {title} Resources by {method}")
+                
+                options = [
+                    "Import",
+                    "Export"
+                ]
+                for num, opt in enumerate(options):
+                    print(f"{num}. {opt}")
+                
+                print("[E/e] Exit - Cancels Sorting")
+                
+                ie = input(f"\nEnter a number to select Import/Export [0-{len(options)}]: ")
+                
+                if ie.lower() == "e":
+                    return
+                
+                try:
+                    ie = int(ie)
+                    
+                    if ie not in range(len(options) - 1):
+                        raise Exception("Invalid input")
+                    
+                    for i in sectors:
+                        match i:
+                            case 2:
+                                self.ImportExport[i].sort(reverse=True, key=lambda x: sum(x[1][ie]))
+                            case _:
+                                self.ImportExport[i].sort(reverse=True, key=lambda x: x[1][ie])
+                        sort_order[i] = [x[0] for x in self.ImportExport[i]]
+                    break
+                except Exception as e:
+                    utils.PrintErrorMenu(e)
+                    continue
+
+        if method == "ISA":
+            for i in sectors:
+                match i:
+                    case 2:
+                        self.PublicIndustry[i] = sorted(self.PublicIndustry[i], key=lambda x: sum(x[1]))
+                    case _:
+                        self.PublicIndustry[i] = sorted(self.PublicIndustry[i], key=lambda x: x[1])
+                sort_order[i] = [x[0] for x in self.PublicIndustry[i]]
+
+        if method == "ISC":
+            for i in sectors:
+                self.Resources[i] = sorted(self.Resources[i], key=lambda x: x.ISC)
+                sort_order[i] = [x.name for x in self.Resources[i]]
+
+        if method == "Market Value":
+            for i in sectors:
+                self.Resources[i] = sorted(self.Resources[i], key=lambda x: x.Cost)
+                sort_order[i] = [x.name for x in self.Resources[i]]
+
+        for i in sectors:
+            self.Resources[i] = sorted(self.Resources[i], key=lambda x: sort_order[i].index(x.name))
+            self.PrivateIndustry[i] = sorted(self.PrivateIndustry[i], key=lambda x: sort_order[i].index(x[0]))
+            self.PublicIndustry[i] = sorted(self.PublicIndustry[i], key=lambda x: sort_order[i].index(x[0]))
+            self.ImportExport[i] = sorted(self.ImportExport[i], key=lambda x: sort_order[i].index(x[0]))
+            self.Stockpile[i] = sorted(self.Stockpile[i], key=lambda x: sort_order[i].index(x[0]))
+            for j in range(3):
+                self.Consumption[j][i] = sorted(self.Consumption[j][i], key=lambda x: sort_order[i].index(x[0]))            
+
+        self.SavePlayer()
+
     def ViewDetailedIndustryOverview(self): # TODO: I feel this could be better/more descriptive somehow
         utils.CLS()
         utils.PrintMenu("Det. Ind. Overview")
@@ -523,8 +761,11 @@ class Player:
                 try:
                     for aid, a in enumerate(r[1][1]):
                         self.info['budget'] += a * self.Resources[sid][rid].Cost
+                    for aid, a in enumerate(r[1][0]):
+                        self.info['budget'] -= a * self.Resources[sid][rid].Cost
                 except:
                     self.info['budget'] += r[1][1] * self.Resources[sid][rid].Cost
+                    self.info['budget'] -= r[1][0] * self.Resources[sid][rid].Cost
 
         utils.CLS()
         utils.PrintMenu("Surplus to Stockpile")
@@ -536,9 +777,13 @@ class Player:
             utils.CLS()
             utils.PrintMenu("Game Options")
             options = [
-                "Add Resource",
+                "Add Resource", #0
+                "Edit Resource",
+                "Remove Resource", 
+                "Reload Resource Prices", #3
+                "Sort Resources",
                 "Modify Population Consumption",
-                "Add Industry Surplus to Stockpile"
+                "Add Industry Surplus to Stockpile" #6
             ]
             for num, opt in enumerate(options):
                 print(f"{num}. {opt}")
@@ -554,11 +799,11 @@ class Player:
                 c = int(c)
 
                 match c:
-                    case 0:
-                        self.CreateResource()
-                    case 1:
+                    case 4:
+                        self.SortResources()
+                    case 5:
                         self.ModifyPopulationConsumption()
-                    case 2:
+                    case 6:
                         self.SurplusToStockpile()
                     case _: # Default
                         raise Exception("Invalid input")
