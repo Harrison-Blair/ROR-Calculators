@@ -396,23 +396,72 @@ class Player:
                             case _:
                                 self.Consumption[con_sort][i].sort(reverse=True, key=lambda x: x[1])
                         sort_order[i] = [x[0] for x in self.Consumption[con_sort][i]]
-                    
                     break
                 except Exception as e:
                     utils.PrintErrorMenu(e)
                     continue
 
         if method == "Import/Export":
-            pass
+            while True:
+                utils.CLS()
+                title = ""
+                for sid, sector in enumerate(sectors):
+                    if sid == len(sectors) - 1:
+                        title += sectornames[sector]
+                        continue
+                    title += sectornames[sector] + ", "
+                utils.PrintMenu(f"Sort {title} Resources by {method}")
+                
+                options = [
+                    "Import",
+                    "Export"
+                ]
+                for num, opt in enumerate(options):
+                    print(f"{num}. {opt}")
+                
+                print("[E/e] Exit - Cancels Sorting")
+                
+                ie = input(f"\nEnter a number to select Import/Export [0-{len(options)}]: ")
+                
+                if ie.lower() == "e":
+                    return
+                
+                try:
+                    ie = int(ie)
+                    
+                    if ie not in range(len(options) - 1):
+                        raise Exception("Invalid input")
+                    
+                    for i in sectors:
+                        match i:
+                            case 2:
+                                self.ImportExport[i].sort(reverse=True, key=lambda x: sum(x[1][ie]))
+                            case _:
+                                self.ImportExport[i].sort(reverse=True, key=lambda x: x[1][ie])
+                        sort_order[i] = [x[0] for x in self.ImportExport[i]]
+                    break
+                except Exception as e:
+                    utils.PrintErrorMenu(e)
+                    continue
 
         if method == "ISA":
-            pass
+            for i in sectors:
+                match i:
+                    case 2:
+                        self.PublicIndustry[i] = sorted(self.PublicIndustry[i], key=lambda x: sum(x[1]))
+                    case _:
+                        self.PublicIndustry[i] = sorted(self.PublicIndustry[i], key=lambda x: x[1])
+                sort_order[i] = [x[0] for x in self.PublicIndustry[i]]
 
         if method == "ISC":
-            pass
+            for i in sectors:
+                self.Resources[i] = sorted(self.Resources[i], key=lambda x: x.ISC)
+                sort_order[i] = [x.name for x in self.Resources[i]]
 
         if method == "Market Value":
-            pass
+            for i in sectors:
+                self.Resources[i] = sorted(self.Resources[i], key=lambda x: x.Cost)
+                sort_order[i] = [x.name for x in self.Resources[i]]
 
         for i in sectors:
             self.Resources[i] = sorted(self.Resources[i], key=lambda x: sort_order[i].index(x.name))

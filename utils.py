@@ -113,7 +113,7 @@ def CreatePlayerData():
             res = comodity.Comodity(resource['name'], resource['type'], resource['ISC'], resource['Quantity'], resource['Cost'], resource['Facility'], resource['Ingredients'])
             Resources[2].append(res)
             isa = []
-            for i in resource['Input']:
+            for i in resource['Ingredients']:
                 isa.append(0.0)
             ImpExp[2].append([res.name, [isa] * 2])
             PublicIndustry[2].append([res.name, isa])
