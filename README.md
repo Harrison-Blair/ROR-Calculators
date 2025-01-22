@@ -9,7 +9,7 @@ The Economy module focues on the tracking of economic resources and costs.
 **Planned/Existing Features**:
 - Add, remove, and edit `Resources`
 - View `Resource` Production
-  - View `Agricultural`, `Mining`, and `Industrial resource Industrial Score Costs` (ISC), `Industrial Score Allocation` (ISA), `Market Costs`, and `Inputs` (if applicable).
+  - View `Agricultural`, `Mining`, and `Industrial resource Industrial Score Costs` (ISC), `Industrial Score Allocation` (ISA), `Market Costs`, and `Ingredients` (if applicable).
 - Manage `Market Costs`
 - Invest `Budget` into `Industrial Score`
 - Allocate `Industrial Score` to different `Resources`
