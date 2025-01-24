@@ -570,7 +570,7 @@ class Player:
 
                 print("[E/e] Exit")
 
-                rid = input(f"\nEnter the number of the resource you would like to allocate Industrial Score to [1-{len(self.PublicIndustry[s]) - 1}]: ")
+                rid = input(f"\nEnter the number of the resource you would like to allocate Industrial Score to [0-{len(self.PublicIndustry[s]) - 1}]: ")
 
                 if rid.lower() == "e":
                     break
