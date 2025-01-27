@@ -956,3 +956,12 @@ class Player:
                     self.info[options[c]] = value
             except Exception as e:
                 utils.PrintErrorMenu(e)
+
+    def CreateResource(self):
+        pass
+
+    def EditResource(self):
+        pass
+
+    def RemoveResource(self):
+        pass
