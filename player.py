@@ -777,13 +777,10 @@ class Player:
             utils.CLS()
             utils.PrintMenu("Game Options")
             options = [
-                "Add Resource", #0
-                "Edit Resource",
-                "Remove Resource", 
-                "Reload Resource Prices", #3
+                "Resource Options",
                 "Sort Resources",
                 "Modify Population Consumption",
-                "Add Industry Surplus to Stockpile" #6
+                "Add Industry Surplus to Stockpile"
             ]
             for num, opt in enumerate(options):
                 print(f"{num}. {opt}")
@@ -799,15 +796,16 @@ class Player:
                 c = int(c)
 
                 match c:
-                    case 4:
+                    case 0:
+                        self.ResourceOptions()
+                    case 1:
                         self.SortResources()
-                    case 5:
+                    case 2:
                         self.ModifyPopulationConsumption()
-                    case 6:
+                    case 3:
                         self.SurplusToStockpile()
                     case _: # Default
                         raise Exception("Invalid input")
-                    
             except Exception as e:
                 utils.PrintErrorMenu(e)
 
@@ -957,8 +955,142 @@ class Player:
             except Exception as e:
                 utils.PrintErrorMenu(e)
 
+    def ResourceOptions(self):
+        while True:
+            utils.CLS()
+            utils.PrintMenu("Resource Options")
+            options = [
+                "Create Resource",
+                "Edit Resource",
+                "Remove Resource"
+            ]
+            for num, opt in enumerate(options):
+                print(f"{num}. {opt}")
+
+            print("[E/e] Exit")
+
+            c = input(f"\nEnter a number [0-{len(options) - 1}]: ")
+
+            if c.lower() == "e":
+                break
+
+            try:
+                c = int(c)
+
+                match c:
+                    case 0:
+                        self.CreateResource()
+                    case 1:
+                        self.EditResource()
+                    case 2:
+                        self.RemoveResource()
+                    case _: # Default
+                        raise Exception("Invalid input")
+            except Exception as e:
+                utils.PrintErrorMenu(e)
+
     def CreateResource(self):
-        pass
+        while True:
+            utils.CLS()
+            utils.PrintMenu("Create Resource")
+            options = [
+                "Agriculture",
+                "Mining",
+                "Industry"
+            ]
+            for num, opt in enumerate(options):
+                print(f"{num}. {opt}")
+
+            print("[E/e] Exit")
+
+            s = input(f"\nSelect a Sector [0-{len(options) - 1}]: ")
+
+            if s.lower() == "e":
+                return
+
+            try:
+                s = int(s)
+
+                if s not in range(0, len(options)):
+                    raise Exception("Invalid input")
+                
+                name = input(f"\nEnter the name of the resource: ")
+                isc = float(input(f"\nEnter the Industrial Score Cost of the resource: "))
+                quantity = float(input(f"\nEnter the Quantity Produced of the resource: "))
+                cost = float(input(f"\nEnter the Market Value of the resource: "))
+
+                recipies = None
+                if s == 0 or s == 1:
+                    building = ["Farm", "Mine"]
+                    facility = name + " " + building[s]
+                    self.Resources[s].append(comodity.Comodity(name, isc, quantity, cost, facility))
+                    self.PublicIndustry[s].append([name, 0.0])
+                    self.ImportExport[s].append([name, [0.0, 0.0]])
+                    self.Stockpile[s].append([name, 0.0])
+                    for i in range(3):
+                        self.Consumption[i][s].append([name, 0.0])
+                    self.SavePlayer()
+                    return
+                elif s == 2:
+                    facility = input(f"\nEnter the Facility that produces the resource: ")
+                    
+                    recipies = [[]]
+                    while True:
+                        utils.CLS()
+                        utils.PrintMenu(f"Create {name} Recipies")
+                        for num, recipie in enumerate(recipies):
+                            print(f"{num}. {recipie}")
+                        print("\n[E/e] Exit")
+                        print("[A/a] Add Recipie")
+
+                        recipie = input(f"\nEnter a recipie # for {name} [0-{len(recipies)}]: ")
+
+                        if recipie.lower() == "e":
+                            break
+
+                        if recipie.lower() == "a":
+                            recipies.append([])
+                            continue
+
+                        try:
+                            rid = int(recipie)
+
+                            if rid not in range(0, len(recipies)):
+                                raise Exception("Invalid input")
+                            
+                            recipies[rid] = []
+
+                            while True:
+                                utils.CLS()
+                                utils.PrintMenu(f"Create {name} Recipie #{rid}")
+                                for num, resource in enumerate(recipies[rid]):
+                                    print(f"{num}. {resource}")
+
+                                print("\n[E/e] Exit")
+
+                                res = input(f"Enter a resource to be added to the recipie: ")
+
+                                if res.lower() == "e":
+                                    break
+
+                                amount = float(input(f"Enter the amount of the resource: "))
+
+                                recipies[rid].append([res, amount])
+                            isa = []
+                            for r in recipies:
+                                isa.append(0.0)
+                            self.Resources[s].append(comodity.Comodity(name, isc, quantity, cost, facility, recipies))
+                            self.PublicIndustry[s].append([name, isa])
+                            self.ImportExport[s].append([name, [isa] * 2])
+                            self.Stockpile[s].append([name, isa])
+                            for i in range(3):
+                                self.Consumption[i][s].append([name, isa])
+                            self.SavePlayer()
+                        except Exception as e:
+                            utils.PrintErrorMenu(e)
+                            continue
+            except Exception as e:
+                utils.PrintErrorMenu(e)
 
     def EditResource(self):
         pass
