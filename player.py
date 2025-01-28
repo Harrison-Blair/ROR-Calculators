@@ -1093,7 +1093,108 @@ class Player:
                 utils.PrintErrorMenu(e)
 
     def EditResource(self):
-        pass
+        while True:
+            utils.CLS()
+            utils.PrintMenu("Edit Resource")
+            options = [
+                "Agriculture",
+                "Mining",
+                "Industry"
+            ]
+            for num, opt in enumerate(options):
+                print(f"{num}. {opt}")
+            
+            for i in range(3):
+                self.PrintResources(i)
+
+            print("[E/e] Exit")
+
+            s = input(f"\nSelect a Sector [0-{len(options) - 1}]: ")
+
+            if s.lower() == "e":
+                return
+            
+            try:
+                s = int(s)
+
+                if s not in range(0, len(options)):
+                    raise Exception("Invalid input")
+                
+                utils.CLS()
+                utils.PrintMenu(f"Edit {options[s]} Resource")
+                self.PrintResources(s)
+
+                print("[E/e] Exit")
+
+                rid = input(f"\nEnter the id of the resource you would like to edit [0-{len(self.Resources[s]) - 1}]: ")
+
+                if rid.lower() == "e":
+                    break
+
+                rid = int(rid)
+
+                if rid not in range(0, len(self.Resources[s]) + 1):
+                    raise Exception("Invalid input")
+                
+                while True:
+                    utils.CLS()
+                    utils.PrintMenu(f"Edit {self.Resources[s][rid].name}")
+                    options = [
+                                f"Name: {self.Resources[s][rid].name}",
+                                f"ISC: {self.Resources[s][rid].ISC}",
+                                f"Quantity: {self.Resources[s][rid].Quantity}",
+                                f"Cost: {self.Resources[s][rid].Cost}",
+                                f"Facility: {self.Resources[s][rid].Facility}"
+                            ]
+                    if s == 2:
+                        recipies = f"Recipies:\n"
+                        for rid, recipie in enumerate(self.Resources[s][rid].Ingredients):
+                            recipies += f"\tRecipie #{rid}:\n"
+                            for resid, resource in enumerate(recipie):
+                                recipies += f"\t\t{resource[0]}: {resource[1]}\n"
+                        options.append(recipies)
+
+                    for num, opt in enumerate(options):
+                        print(f"{num}. {opt}")
+
+                    print("[E/e] Exit")
+
+                    c = input(f"\nEnter an item to modify [0-{len(options) - 1}]: ")
+
+                    if c.lower() == "e":
+                        break
+
+                    try:
+                        c = int(c)
+
+                        if c not in range(0, len(options)):
+                            raise Exception("Invalid input")
+                        
+                        match c:
+                            case 0:
+                                name = input(f"\nEnter the new name of the resource: ")
+                                self.Resources[s][rid].name = name
+                            case 1:
+                                isc = int(input(f"\nEnter the new Industrial Score Cost of the resource: "))
+                                self.Resources[s][rid].ISC = isc
+                            case 2:
+                                quantity = int(input(f"\nEnter the new Quantity Produced of the resource: "))
+                                self.Resources[s][rid].Quantity = quantity
+                            case 3:
+                                cost = float(input(f"\nEnter the new Market Value of the resource: "))
+                                self.Resources[s][rid].Cost = cost
+                            case 4:
+                                facility = input(f"\nEnter the new Facility that produces the resource: ")
+                                self.Resources[s][rid].Facility = facility
+                            case 5:
+                                recipies = self.Resources[s][rid].Ingredients
+                                # Fix here
+
+                    except Exception as e:
+                        utils.PrintErrorMenu(e)
+                        continue
+            except Exception as e:
+                utils.PrintErrorMenu(e)
 
     def RemoveResource(self):
         pass
