@@ -55,6 +55,8 @@ class Economy:
                 json.dump(player_economy_data, f, indent=4)
         except Exception as e:
             utils.PrintErrorMenu(str(e) + "\n\nFailed to save player_economy_data.")
+            with open('game_data/player_economy_data.json', 'w') as f:
+                json.dump({}, f, indent=4)
         
         try:
             with open('game_data/resources.json', 'w') as f: 
@@ -69,6 +71,8 @@ class Economy:
                 } for resource in self.resources], f, indent=4) #Type: List[commodity.Resource] <- I want to make this typed if possible
         except Exception as e:
             utils.PrintErrorMenu(str(e) + "\n\nFailed to save resources.json.")
+            with open('game_data/resources.json', 'w') as f:
+                json.dump([], f, indent=4)
 
     def menu(self):
         options = [
