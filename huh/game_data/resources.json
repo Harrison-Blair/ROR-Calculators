@@ -1,0 +1,11 @@
+[
+    {
+        "name": "Iron",
+        "sector": "Mining",
+        "ISC": 1,
+        "amount": 1,
+        "market_value": 0.7,
+        "facility": "Iron Mine",
+        "recipies": null
+    }
+]

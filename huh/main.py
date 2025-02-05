@@ -1,4 +1,6 @@
-from scripts import economy
+from scripts import player
 
 if __name__ == "__main__":
-    econ = economy.Economy
+    p = player.Player()
+
+    p.menu()

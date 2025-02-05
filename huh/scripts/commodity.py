@@ -1,7 +1,8 @@
 class Resource:
-    def __init__(self, info, player_data):
+    def __init__(self, info, player_data, private_sector_share):
         # Somewhat constant values 
         self.NAME = info['name']
+        self.SECTOR = info['sector']
         self.ISC = info['ISC']
         self.AMOUNT = info['amount']
         self.MARKET_VALUE = info['market_value']
@@ -15,7 +16,7 @@ class Resource:
         self.dir_imports = player_data['dir_imports'] # (val, source)
         self.dir_exports = player_data['dir_exports']
         self.stockpile = player_data['stockpile']
-        self.private_sector_share = player_data['private_sector_share']
+        self.private_sector_share = private_sector_share
 
         # Calculated values
         self.public_sector = self.calculate_public_sector()

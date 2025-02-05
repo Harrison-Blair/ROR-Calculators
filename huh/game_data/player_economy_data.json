@@ -1,0 +1,11 @@
+{
+    "private_sector_share": 90,
+    "Iron": {
+        "isa": 0,
+        "om_imports": 0,
+        "om_exports": 0,
+        "dir_imports": [],
+        "dir_exports": [],
+        "stockpile": 0
+    }
+}
